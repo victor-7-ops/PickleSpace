@@ -18,6 +18,18 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Host cannot leave — cancel the game instead' }, { status: 400 })
   }
 
+  // Verify player is actually in the game before deleting
+  const { data: membership } = await supabase
+    .from('game_players')
+    .select('id')
+    .eq('game_id', params.id)
+    .eq('player_id', user.id)
+    .single()
+
+  if (!membership) {
+    return NextResponse.json({ error: 'You are not in this game' }, { status: 409 })
+  }
+
   const { error: deleteError } = await supabase
     .from('game_players')
     .delete()

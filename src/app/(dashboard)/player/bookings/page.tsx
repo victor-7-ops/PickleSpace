@@ -21,7 +21,6 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
     .select('*, court:courts(name), slot:slots(date, start_time, end_time)')
     .eq('player_id', user!.id)
     .neq('booking_status', 'cancelled')
-    .order('created_at', { ascending: tab === 'upcoming' })
 
   const all = (bookings ?? []) as unknown as Booking[]
 
@@ -31,9 +30,18 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
     return tab === 'upcoming' ? slotDate >= today : slotDate < today
   })
 
+  // Sort by slot date (not created_at)
+  const sorted = filtered.sort((a, b) => {
+    const aDate = (a.slot as { date?: string } | null)?.date ?? ''
+    const bDate = (b.slot as { date?: string } | null)?.date ?? ''
+    return tab === 'upcoming'
+      ? aDate.localeCompare(bDate)   // ascending: soonest first
+      : bDate.localeCompare(aDate)   // descending: most recent first
+  })
+
   // Pre-render QR codes server-side for all bookings
   const withQr = await Promise.all(
-    filtered.map(async b => ({
+    sorted.map(async b => ({
       booking: b,
       qrDataUrl: await QRCode.toDataURL(b.qr_code, { width: 224, margin: 2 }),
     }))

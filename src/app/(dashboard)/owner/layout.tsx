@@ -11,20 +11,32 @@ async function getOwnerStats(userId: string) {
     .select('id')
     .eq('owner_id', userId)
 
-  const courtIds = (courts ?? []).map(c => c.id)
-
+  const courtIds = (courts ?? []).map((c: { id: string }) => c.id)
   if (courtIds.length === 0) return { bookingsToday: 0, revenueThisWeek: 0 }
+
+  // Step 1: get today's slot IDs for this owner's courts
+  const { data: todaySlots } = await supabase
+    .from('slots')
+    .select('id')
+    .in('court_id', courtIds)
+    .eq('date', today)
+
+  const todaySlotIds = (todaySlots ?? []).map((s: { id: string }) => s.id)
+
+  // Step 2: count confirmed bookings for those slots
+  let bookingsToday = 0
+  if (todaySlotIds.length > 0) {
+    const { count } = await supabase
+      .from('bookings')
+      .select('id', { count: 'exact', head: true })
+      .in('slot_id', todaySlotIds)
+      .eq('booking_status', 'confirmed')
+    bookingsToday = count ?? 0
+  }
 
   const weekStart = new Date()
   weekStart.setDate(weekStart.getDate() - weekStart.getDay())
   const weekStartStr = weekStart.toISOString().split('T')[0]
-
-  const { count: bookingsToday } = await supabase
-    .from('bookings')
-    .select('id', { count: 'exact', head: true })
-    .in('court_id', courtIds)
-    .eq('booking_status', 'confirmed')
-    .filter('slot_id', 'in', `(select id from slots where date = '${today}')`)
 
   const { data: weekBookings } = await supabase
     .from('bookings')
@@ -33,9 +45,9 @@ async function getOwnerStats(userId: string) {
     .eq('payment_status', 'paid')
     .gte('created_at', `${weekStartStr}T00:00:00`)
 
-  const revenueThisWeek = (weekBookings ?? []).reduce((sum, b) => sum + Number(b.amount), 0)
+  const revenueThisWeek = (weekBookings ?? []).reduce((sum: number, b: { amount: unknown }) => sum + Number(b.amount), 0)
 
-  return { bookingsToday: bookingsToday ?? 0, revenueThisWeek }
+  return { bookingsToday, revenueThisWeek }
 }
 
 export default async function OwnerLayout({ children }: { children: React.ReactNode }) {
@@ -60,7 +72,7 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="sticky top-0 z-40 bg-green-600 text-white shadow-md">
         <div className="px-4 pt-4 pb-2">
-          <p className="font-semibold text-base">{greeting}, {profile.name.split(' ')[0]} 👋</p>
+          <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>
           <div className="flex gap-4 mt-1 text-sm text-green-100">
             <span>📅 {stats.bookingsToday} booking{stats.bookingsToday !== 1 ? 's' : ''} today</span>
             <span>💰 ₱{stats.revenueThisWeek.toLocaleString()} this week</span>

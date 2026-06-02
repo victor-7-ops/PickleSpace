@@ -7,7 +7,8 @@ interface Props {
 }
 
 export default async function DiscoverPage({ searchParams }: Props) {
-  const today = new Date().toISOString().split('T')[0]
+  const now = new Date()
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
   const date = searchParams.date ?? today
 
   const supabase = await createClient()
@@ -61,7 +62,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="font-bold text-green-700">₱{court.hourly_rate.toLocaleString()}<span className="text-xs font-normal text-gray-400">/hr</span></p>
-                    <p className="text-xs text-green-600 font-medium mt-0.5">{court.slotCount} slot{court.slotCount !== 1 ? 's' : ''} today</p>
+                    <p className="text-xs text-green-600 font-medium mt-0.5">{court.slotCount} slot{court.slotCount !== 1 ? 's' : ''} available</p>
                   </div>
                 </div>
                 {court.amenities.length > 0 && (

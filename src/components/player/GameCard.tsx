@@ -20,6 +20,7 @@ export function GameCard({ game, showRole }: GameCardProps) {
 
   const host = game.host as { name?: string } | null
   const court = game.court as { name?: string; city?: string } | null
+  const slot = game.slot as { start_time?: string } | null
 
   function spotsLabel() {
     if (isCancelled) return { text: 'Cancelled', cls: 'bg-red-100 text-red-700' }
@@ -37,7 +38,7 @@ export function GameCard({ game, showRole }: GameCardProps) {
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-900 truncate">{game.title}</p>
           <p className="text-sm text-gray-500 mt-0.5 truncate">
-            {court?.name}
+            {court?.name}{slot?.start_time ? ` · ${slot.start_time}` : ''}
           </p>
         </div>
         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">

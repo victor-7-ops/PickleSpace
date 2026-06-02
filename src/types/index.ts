@@ -83,6 +83,7 @@ export interface Game {
   created_at: string
   court?: Court
   host?: User
+  slot?: Slot
   game_players?: GamePlayer[]
 }
 

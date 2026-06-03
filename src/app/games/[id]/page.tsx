@@ -17,13 +17,16 @@ export default async function GameDetailPage({ params }: Props) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: game } = await supabase
+  const { data: rawGame } = await supabase
     .from('games')
     .select('*, slot:slots(date, start_time, end_time), court:courts(name, address), host:users(name)')
     .eq('id', params.id)
     .single()
 
-  if (!game) notFound()
+  if (!rawGame) notFound()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const game = rawGame as any
 
   const { data: gamePlayers } = await supabase
     .from('game_players')

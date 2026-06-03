@@ -17,14 +17,16 @@ export default async function CourtDetailPage({ params, searchParams }: Props) {
 
   const supabase = await createClient()
 
-  const { data: court } = await supabase
+  const { data: rawCourt } = await supabase
     .from('courts')
     .select('*')
     .eq('id', params.id)
     .eq('status', 'active')
     .single()
 
-  if (!court) notFound()
+  if (!rawCourt) notFound()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const court = rawCourt as any
 
   // Fetch slots for selected date ± 3 days
   const from = new Date(selectedDate + 'T00:00:00')

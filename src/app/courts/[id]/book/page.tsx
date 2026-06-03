@@ -18,21 +18,25 @@ export default async function BookPage({ params, searchParams }: Props) {
   if (!user) redirect(`/login?next=/courts/${params.id}/book?slot=${slotId}`)
 
   // Verify slot is held by this user
-  const { data: slot } = await supabase
+  const { data: rawSlot } = await supabase
     .from('slots')
     .select('id, date, start_time, end_time, status, held_by, hold_expires_at, court_id')
     .eq('id', slotId)
     .single()
 
-  if (!slot) notFound()
+  if (!rawSlot) notFound()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const slot = rawSlot as any
 
-  const { data: court } = await supabase
+  const { data: rawCourt } = await supabase
     .from('courts')
     .select('id, name, hourly_rate')
     .eq('id', slot.court_id)
     .single()
 
-  if (!court) notFound()
+  if (!rawCourt) notFound()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const court = rawCourt as any
 
   // Slot not held by this user or hold expired
   if (slot.status !== 'held' || slot.held_by !== user.id) {

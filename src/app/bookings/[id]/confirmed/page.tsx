@@ -14,13 +14,15 @@ export default async function ConfirmedPage({ params }: Props) {
 
   if (!user) redirect(`/login?next=/bookings/${params.id}/confirmed`)
 
-  const { data: booking } = await supabase
+  const { data: rawBooking } = await supabase
     .from('bookings')
     .select('*, slot:slots(date, start_time, end_time), court:courts(id, name)')
     .eq('id', params.id)
     .single()
 
-  if (!booking) notFound()
+  if (!rawBooking) notFound()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const booking = rawBooking as any
 
   if (booking.player_id !== user.id) redirect('/player/bookings')
 

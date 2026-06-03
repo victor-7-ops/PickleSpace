@@ -19,8 +19,8 @@ export default async function NewGamePage({ searchParams }: Props) {
   const slotId = searchParams.slot
   const courtId = searchParams.court
 
-  let slotInfo: { date?: string; start_time?: string; end_time?: string } | null = null
-  let courtInfo: { name?: string } | null = null
+  let slotInfo: { date: string; start_time: string; end_time: string } | null = null
+  let courtInfo: { name: string } | null = null
 
   if (slotId && courtId) {
     const { data: slot } = await supabase
@@ -28,14 +28,14 @@ export default async function NewGamePage({ searchParams }: Props) {
       .select('date, start_time, end_time')
       .eq('id', slotId)
       .single()
-    slotInfo = slot
+    slotInfo = slot as typeof slotInfo
 
     const { data: court } = await supabase
       .from('courts')
       .select('name')
       .eq('id', courtId)
       .single()
-    courtInfo = court
+    courtInfo = court as typeof courtInfo
   }
 
   return (
@@ -47,11 +47,11 @@ export default async function NewGamePage({ searchParams }: Props) {
       <div className="px-4 py-6 max-w-lg mx-auto">
         <CreateGameForm
           courtId={courtId}
-          courtName={courtInfo?.name}
+          courtName={(courtInfo as { name?: string } | null)?.name}
           slotId={slotId}
-          slotDate={slotInfo?.date}
-          slotStart={slotInfo?.start_time}
-          slotEnd={slotInfo?.end_time}
+          slotDate={(slotInfo as { date?: string } | null)?.date}
+          slotStart={(slotInfo as { start_time?: string } | null)?.start_time}
+          slotEnd={(slotInfo as { end_time?: string } | null)?.end_time}
         />
       </div>
     </div>

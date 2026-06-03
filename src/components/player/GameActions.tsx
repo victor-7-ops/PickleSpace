@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sheet } from '@/components/ui/Sheet'
+import { Sheet } from '@/components/ui/bottom-sheet'
 
 type ActionState = 'can-join' | 'joined' | 'full' | 'host' | 'cancelled' | 'unauthenticated'
 

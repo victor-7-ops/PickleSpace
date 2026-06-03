@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Sheet } from '@/components/ui/Sheet'
+import { Sheet } from '@/components/ui/bottom-sheet'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import type { Booking } from '@/types'
 

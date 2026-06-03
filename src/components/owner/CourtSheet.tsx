@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sheet } from '@/components/ui/Sheet'
+import { Sheet } from '@/components/ui/bottom-sheet'
 import type { Court } from '@/types'
 
 const AMENITY_OPTIONS = ['Parking', 'Shower', 'Night Lights', 'Restroom', 'Water Station']

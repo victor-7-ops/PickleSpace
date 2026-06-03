@@ -4,19 +4,7 @@
 
 Real-time slot availability, GCash & card payments via PayMongo, QR check-in, and a matchmaking feed where players post open games and join each other.
 
----
-
-## The Plan
-
-We're building in **3 phases**, each with its own design spec before any code is written:
-
-| Phase | Feature | Status |
-|-------|---------|--------|
-| 1 | **Court Owner Dashboard** — list courts, manage slots (weekly grid), view bookings, track earnings | 🎨 Spec approved, plan next |
-| 2 | **Player Booking Flow** — discover courts, pick a slot, pay via GCash/card, get QR confirmation | 📋 Brainstorm next |
-| 3 | **Matchmaking Feed** — post open games, filter by skill level, join games | 📋 Brainstorm next |
-
-Design specs live in [`docs/superpowers/specs/`](docs/superpowers/specs/).
+**Status: All 3 phases built · Running locally · Ready for Vercel deploy**
 
 ---
 
@@ -35,23 +23,94 @@ Design specs live in [`docs/superpowers/specs/`](docs/superpowers/specs/).
 
 ---
 
+## What's Built
+
+### Phase 1 — Court Owner Dashboard ✅
+- List and manage courts (photos, amenities, pricing)
+- Weekly slot grid with bulk generation and real-time updates
+- Booking management — Today agenda, QR scanner for check-in, Mark Paid for cash
+- Earnings tab — monthly revenue, MoM comparison, CSS-only bar chart, transaction list
+
+### Phase 2 — Player Booking Flow ✅
+- Date-first court discovery (Today / Tomorrow / Pick date)
+- Slots-first court detail page with real-time availability
+- Checkout with 10-minute hold timer, GCash/card/cash payment
+- Post-payment confirmation with QR code on screen + email backup
+- Player bookings history (Upcoming / Past) with QR slide-up
+
+### Phase 3 — Matchmaking Feed ✅
+- Games feed with date grouping and real-time updates
+- My Games tab (hosting / joined, Upcoming / Past)
+- Public shareable game detail page — join, leave, or cancel
+- Create game form pre-filled from booking confirmation
+
+---
+
 ## How It Works
 
-### Two user types
-- **Court Owners** — register their courts, open time slots, see who booked, track earnings
-- **Players** — browse available courts, book a slot, pay online, show QR at the court
+**Two user types:**
+- **Court Owners** — register courts, open time slots, scan QR at check-in, track earnings
+- **Players** — discover courts by date, book a slot, pay online, show QR, post open games
 
-### Core mechanics
-- **10-minute hold lock** — when a player taps a slot, it's held exclusively for them for 10 minutes while they pay. Prevents double booking without requiring login first.
-- **10% platform commission** — PickleSpace takes 10% of every booking. The owner keeps 90%.
-- **QR check-in** — every confirmed booking gets a unique QR code. Owner scans it at the court to mark the player as checked in.
-- **Matchmaking feed** — players post "open games" on booked slots. Others can join up to the max player count. Filterable by skill level (beginner / intermediate / advanced / open).
+**Core mechanics:**
+- **10-minute hold lock** — slot locked when player taps it, released if payment doesn't complete. Prevents double booking. Uses an atomic Postgres RPC — never update slot status directly.
+- **10% platform commission** — stored in `bookings.platform_fee`, never shown to the player.
+- **QR check-in** — unique token per booking, rendered server-side with the `qrcode` package.
+- **Matchmaking** — players post open games on their booked slots. Others discover and join in real time. Games must be tied to a booked slot in MVP.
 
-### Payment flow
-1. Player picks a slot → slot is held for 10 min
-2. Player pays via PayMongo checkout (GCash or card)
-3. PayMongo fires a webhook → booking confirmed → QR code emailed to player
-4. Player shows QR at court → owner scans → done
+---
+
+## Getting Started
+
+### 1. Prerequisites
+- Node.js 18+
+- A [Supabase](https://supabase.com) project
+- A [PayMongo](https://paymongo.com) account (Philippines)
+- A [Resend](https://resend.com) account
+
+### 2. Clone and install
+
+```bash
+git clone https://github.com/victor-7-ops/PickleSpace.git
+cd PickleSpace
+npm install
+```
+
+### 3. Set up environment variables
+
+Copy `.env.local` and fill in your keys:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+PAYMONGO_SECRET_KEY=sk_live_...
+PAYMONGO_PUBLIC_KEY=pk_live_...
+PAYMONGO_WEBHOOK_SECRET=your_webhook_secret
+
+RESEND_API_KEY=re_...
+
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 4. Set up the database
+
+In your Supabase dashboard:
+
+1. **Database → Extensions** → enable `pg_cron`
+2. **SQL Editor** → paste and run `supabase/schema.sql`
+3. **SQL Editor** → paste and run `supabase/migrations/001_fix_handle_new_user_role.sql`
+4. **Storage → New Bucket** → name: `court-images`, set to **Public**
+
+### 5. Run
+
+```bash
+npm run dev
+# → http://localhost:3000
+```
+
+Register as an owner → add a court → manually set its status to `active` in Supabase Table Editor → generate slots → register as a player → try booking.
 
 ---
 
@@ -63,16 +122,18 @@ src/
 │   ├── (auth)/              # login, register
 │   ├── (dashboard)/
 │   │   ├── owner/           # courts, schedule, bookings, earnings
-│   │   └── player/          # discover, games
-│   ├── courts/[id]/         # public court page + booking
-│   ├── games/[id]/          # game detail + join
-│   └── api/                 # API routes
-│       ├── bookings/        # create booking + PayMongo link
-│       ├── slots/hold/      # 10-min slot hold
-│       ├── payments/webhook/ # PayMongo confirmation
-│       └── games/           # matchmaking CRUD
+│   │   └── player/          # discover, games, bookings
+│   ├── courts/[id]/         # public court detail + checkout
+│   ├── games/[id]/          # public game detail
+│   ├── games/new/           # create game form
+│   ├── bookings/[id]/       # booking confirmation
+│   └── api/                 # all API routes
+├── components/
+│   ├── ui/                  # Sheet, StatusBadge (shared)
+│   ├── owner/               # dashboard components
+│   └── player/              # booking + matchmaking components
 ├── lib/
-│   ├── supabase/            # browser + server clients
+│   ├── supabase/            # browser + server clients + middleware
 │   ├── paymongo/            # payment links, fee calc, webhook verify
 │   └── resend/              # transactional emails
 ├── hooks/
@@ -82,100 +143,61 @@ src/
 
 ---
 
-## Getting Started (local dev)
+## Key Rules
 
-### 1. Prerequisites
-- Node.js 18+
-- A [Supabase](https://supabase.com) project
-- A [PayMongo](https://paymongo.com) account (free, Philippines)
-- A [Resend](https://resend.com) account (free tier: 3,000 emails/mo)
-
-### 2. Clone and install
-```bash
-git clone https://github.com/gadianavictor/picklespace.git
-cd picklespace
-npm install
-```
-
-### 3. Set up environment
-Copy `.env.local` and fill in your keys:
-```bash
-cp .env.local .env.local.example  # reference copy
-```
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-
-PAYMONGO_SECRET_KEY=sk_live_YOUR_KEY
-PAYMONGO_PUBLIC_KEY=pk_live_YOUR_KEY
-PAYMONGO_WEBHOOK_SECRET=your_webhook_secret
-
-RESEND_API_KEY=re_YOUR_KEY
-
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### 4. Set up the database
-Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) into your Supabase project's **SQL Editor** and run it. This creates all tables, RLS policies, RPC functions, and the cron job for releasing expired slot holds.
-
-Then generate TypeScript types:
-```bash
-npx supabase gen types typescript --project-id YOUR_PROJECT_REF > src/lib/supabase/database.types.ts
-```
-
-### 5. Run
-```bash
-npm run dev
-# → http://localhost:3000
-```
-
----
-
-## Key Rules (read before writing any code)
-
-**1. Never update slot status directly.**
-Always use the `hold_slot` RPC or `confirm_booking` RPC. They're atomic. Direct updates bypass the lock and cause double bookings.
+**1. Never update slot status directly**
 
 ```ts
 // ✅ correct
 await supabase.rpc('hold_slot', { p_slot_id: slotId, p_user_id: userId })
 
-// ❌ wrong
+// ❌ wrong — bypasses the lock, causes double bookings
 await supabase.from('slots').update({ status: 'held' }).eq('id', slotId)
 ```
 
-**2. Platform fee is always 10%, stored separately.**
-`bookings.amount` = gross price the player pays. `bookings.platform_fee` = 10% of that. Never subtract the fee from amount.
+**2. Platform fee is always 10%, stored separately**
+`bookings.amount` = gross price the player pays. `bookings.platform_fee` = 10% of that. Never subtract.
 
-**3. Use the right Supabase client.**
+**3. Use the right Supabase client**
 - Browser / Client Components → `src/lib/supabase/client.ts`
 - Server Components + API routes → `src/lib/supabase/server.ts`
 - Middleware only → `src/lib/supabase/middleware.ts`
 
-**4. New courts start as `pending`.**
-No auto-activation in MVP. Manual review before setting `status = 'active'`.
+**4. New courts start as `pending`**
+No auto-activation in MVP. Manually set `status = 'active'` in Supabase.
+
+**5. Games must link to a booked slot**
+Enforced at the form level — `/games/new` shows "Book a court first" if no `?slot=&court=` params.
 
 ---
 
-## Database Schema
+## Deploying to Vercel
 
-Six tables: `users`, `courts`, `slots`, `bookings`, `games`, `game_players`.
+```bash
+npx vercel --prod
+```
 
-Full schema with RLS policies, RPC functions, and cron config: [`supabase/schema.sql`](supabase/schema.sql)
+Or connect GitHub at [vercel.com/new](https://vercel.com/new). Set all env vars in the Vercel dashboard. Update `NEXT_PUBLIC_APP_URL` to your Vercel domain, then register the PayMongo webhook:
+
+```
+https://your-domain.vercel.app/api/payments/webhook
+```
+
+Subscribe to the `payment.paid` event.
 
 ---
 
 ## Market Context
 
-Philippines pickleball is growing fast — 277 registered clubs, 18,000+ players as of late 2025. Existing platforms (PickleHub PH, Sparrk PH) are Metro Manila-heavy. PickleSpace goes deep in Cebu and Visayas first where they have little presence.
+Philippines pickleball is growing fast — 277 registered clubs, 18,000+ players as of 2025. Existing platforms (PickleHub PH, Sparrk PH) are Metro Manila-heavy. PickleSpace targets Cebu and Visayas first where they have little presence.
 
-Competitors require manual GCash screenshots sent via Viber. PickleSpace is fully automated — book, pay, get QR, show up.
+Competitors require manual GCash screenshots via Viber. PickleSpace is fully automated — book, pay, get QR, show up.
 
 ---
 
 ## Design Specs
 
-Approved specs in [`docs/superpowers/specs/`](docs/superpowers/specs/):
-- [2026-06-02 — Owner Dashboard](docs/superpowers/specs/2026-06-02-owner-dashboard-design.md)
+All approved design decisions live in [`docs/superpowers/specs/`](docs/superpowers/specs/):
+- [Owner Dashboard](docs/superpowers/specs/2026-06-02-owner-dashboard-design.md)
+- [Player Booking Flow](docs/superpowers/specs/2026-06-03-booking-flow-design.md)
+- [Matchmaking Feed](docs/superpowers/specs/2026-06-03-matchmaking-feed-design.md)

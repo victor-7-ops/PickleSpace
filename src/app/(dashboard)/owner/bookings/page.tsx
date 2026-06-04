@@ -27,7 +27,7 @@ export default async function BookingsPage({
 
   if (courtIds.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400">
+      <div className="text-center py-12 text-muted-foreground">
         <p className="text-3xl mb-2">🏟</p>
         <p className="text-sm">List a court first to see bookings.</p>
       </div>
@@ -91,7 +91,7 @@ export default async function BookingsPage({
       {tab === 'all' && <BookingsFilter current={status} />}
 
       {bookings.length === 0 ? (
-        <div className="text-center py-12 text-gray-400">
+        <div className="text-center py-12 text-muted-foreground">
           <p className="text-3xl mb-2">📋</p>
           <p className="text-sm">{tab === 'today' ? 'No bookings today' : 'No bookings found'}</p>
         </div>

@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { QRDisplay } from '@/components/player/QRDisplay'
 import { OpenGamePrompt } from '@/components/player/OpenGamePrompt'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface Props {
   params: { id: string }
@@ -36,16 +38,15 @@ export default async function ConfirmedPage({ params }: Props) {
   // Error state
   if (isCancelled) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 text-center gap-4">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 text-center gap-4">
+        <div className="size-16 bg-destructive/10 rounded-full flex items-center justify-center">
           <span className="text-3xl">✗</span>
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Payment unsuccessful</h1>
-          <p className="text-sm text-gray-500 mt-1">Your booking was not completed.</p>
+          <h1 className="text-xl font-bold">Payment unsuccessful</h1>
+          <p className="text-sm text-muted-foreground mt-1">Your booking was not completed.</p>
         </div>
-        <Link href={`/courts/${(court as { id: string } | null)?.id ?? ''}`}
-          className="px-6 py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold hover:bg-green-700">
+        <Link href={`/courts/${(court as { id: string } | null)?.id ?? ''}`} className={cn(buttonVariants())}>
           Try again
         </Link>
       </div>
@@ -60,11 +61,11 @@ export default async function ConfirmedPage({ params }: Props) {
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">⏳</span>
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Booking Received</h1>
-          <p className="text-sm text-gray-500 mt-1">Confirming your payment…</p>
-          <p className="text-xs text-gray-400 mt-2">This usually takes a few seconds.</p>
+          <h1 className="text-xl font-bold text-foreground">Booking Received</h1>
+          <p className="text-sm text-muted-foreground mt-1">Confirming your payment…</p>
+          <p className="text-xs text-muted-foreground mt-2">This usually takes a few seconds.</p>
           <Link href={`/bookings/${params.id}/confirmed`}
-            className="mt-3 text-sm text-green-600 font-medium hover:underline inline-block">
+            className="mt-3 text-sm text-primary font-medium hover:underline inline-block">
             Refresh
           </Link>
         </div>
@@ -84,14 +85,14 @@ export default async function ConfirmedPage({ params }: Props) {
     <div className="min-h-screen bg-white px-4 py-8 flex flex-col gap-8">
       {/* Success header */}
       <div className="text-center">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
           <span className="text-3xl animate-bounce">✓</span>
         </div>
-        <h1 className="text-xl font-bold text-gray-900">
+        <h1 className="text-xl font-bold text-foreground">
           {isCash ? 'Booking Received!' : 'Booking Confirmed!'}
         </h1>
-        <div className="mt-2 space-y-0.5 text-sm text-gray-500">
-          <p className="font-medium text-gray-700">{(court as { name: string } | null)?.name}</p>
+        <div className="mt-2 space-y-0.5 text-sm text-muted-foreground">
+          <p className="font-medium text-primary">{(court as { name: string } | null)?.name}</p>
           <p>{(slot as { date: string } | null)?.date} · {(slot as { start_time: string } | null)?.start_time} – {(slot as { end_time: string } | null)?.end_time}</p>
           <p>
             ₱{Number(booking.amount).toLocaleString()} · {booking.payment_method}
@@ -109,7 +110,7 @@ export default async function ConfirmedPage({ params }: Props) {
           startTime={(slot as { start_time: string } | null)?.start_time ?? ''}
           endTime={(slot as { end_time: string } | null)?.end_time ?? ''}
         />
-        <p className="text-xs text-gray-400">Also sent to your email as backup</p>
+        <p className="text-xs text-muted-foreground">Also sent to your email as backup</p>
       </div>
 
       {/* Open Game prompt */}

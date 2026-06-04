@@ -56,7 +56,7 @@ export default async function ConfirmedPage({ params }: Props) {
   // Pending state (webhook not yet fired for GCash/card)
   if (!isPaid && !isCash) {
     return (
-      <div className="min-h-screen bg-white px-4 py-8">
+      <div className="min-h-screen bg-background px-4 py-8">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">⏳</span>
@@ -82,7 +82,7 @@ export default async function ConfirmedPage({ params }: Props) {
 
   // Confirmed state (paid or cash)
   return (
-    <div className="min-h-screen bg-white px-4 py-8 flex flex-col gap-8">
+    <div className="min-h-screen bg-background px-4 py-8 flex flex-col gap-8">
       {/* Success header */}
       <div className="text-center">
         <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">

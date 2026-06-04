@@ -50,8 +50,8 @@ export function GamePlayers({ gameId, maxPlayers, initialPlayers, hostId }: Game
           const isHost = p.player_id === hostId
           return (
             <div key={p.id} title={player?.name ?? 'Player'}
-              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0 ${
-                isHost ? 'bg-green-600 ring-2 ring-green-300' : 'bg-blue-500'
+              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-primary-foreground flex-shrink-0 ${
+                isHost ? 'bg-primary ring-2 ring-primary/40' : 'bg-muted-foreground'
               }`}>
               {initials}
             </div>
@@ -59,7 +59,7 @@ export function GamePlayers({ gameId, maxPlayers, initialPlayers, hostId }: Game
         })}
         {Array.from({ length: emptySlots }).map((_, i) => (
           <div key={`empty-${i}`}
-            className="w-10 h-10 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-300 flex-shrink-0">
+            className="w-10 h-10 rounded-full border-2 border-dashed border-border flex items-center justify-center text-muted-foreground flex-shrink-0">
             +
           </div>
         ))}
@@ -72,16 +72,16 @@ export function GamePlayers({ gameId, maxPlayers, initialPlayers, hostId }: Game
           const isHost = p.player_id === hostId
           return (
             <div key={p.id} className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isHost ? 'bg-green-600' : 'bg-blue-500'}`} />
-              <span className="text-sm text-gray-700">{player?.name ?? 'Player'}</span>
-              {isHost && <span className="text-xs text-green-600 font-medium">(host)</span>}
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isHost ? 'bg-primary' : 'bg-muted-foreground'}`} />
+              <span className="text-sm text-foreground">{player?.name ?? 'Player'}</span>
+              {isHost && <span className="text-xs text-primary font-medium">(host)</span>}
             </div>
           )
         })}
         {Array.from({ length: emptySlots }).map((_, i) => (
           <div key={`empty-name-${i}`} className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-gray-200 flex-shrink-0" />
-            <span className="text-sm text-gray-300">Open spot</span>
+            <div className="w-2 h-2 rounded-full bg-muted flex-shrink-0" />
+            <span className="text-sm text-muted-foreground">Open spot</span>
           </div>
         ))}
       </div>

@@ -71,7 +71,7 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-gray-900">Games</h1>
+        <h1 className="text-xl font-bold text-foreground">Games</h1>
         {tab === 'discover' && (
           <Link href="/games/new" className={buttonVariants({ size: 'sm' })}>+ Post Game</Link>
         )}
@@ -117,7 +117,7 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
             <>
               {upcoming.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Upcoming</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Upcoming</p>
                   <div className="flex flex-col gap-3">
                     {upcoming.map(({ game, role }) => (
                       <GameCard key={game.id} game={game} showRole={role} />
@@ -127,7 +127,7 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
               )}
               {past.length > 0 && (
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Past</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">Past</p>
                   <div className="flex flex-col gap-3">
                     {past.map(({ game, role }) => (
                       <GameCard key={game.id} game={game} showRole={role} />

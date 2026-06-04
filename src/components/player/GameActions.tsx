@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -66,10 +67,11 @@ export function GameActions({ gameId, actionState }: GameActionsProps) {
 
       {actionState === 'host' && (
         <AlertDialog>
-          <AlertDialogTrigger className="w-full">
-            <Button variant="destructive" disabled={loading} className="w-full" size="lg">
-              {loading ? 'Cancelling…' : 'Cancel Game'}
-            </Button>
+          <AlertDialogTrigger
+            disabled={loading}
+            className={cn(buttonVariants({ variant: 'destructive', size: 'lg' }), 'w-full')}
+          >
+            {loading ? 'Cancelling…' : 'Cancel Game'}
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>

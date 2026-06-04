@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { BookingCard } from '@/components/owner/BookingCard'
 import { BookingsFilter } from '@/components/owner/BookingsFilter'
+import { cn } from '@/lib/utils'
 import type { Booking } from '@/types'
 
 type FilterStatus = 'all' | 'confirmed' | 'pending' | 'completed' | 'cancelled'
@@ -70,17 +71,18 @@ export default async function BookingsPage({
   return (
     <div>
       {/* Sub-tabs */}
-      <div className="flex border-b border-gray-200 mb-4">
+      <div className="flex border-b border-border mb-4">
         {[
           { key: 'today', label: 'Today' },
           { key: 'all',   label: 'All Bookings' },
         ].map(t => (
           <a key={t.key} href={`/owner/bookings?tab=${t.key}`}
-            className={`flex-1 py-2 text-center text-sm font-medium transition-colors ${
+            className={cn(
+              'flex-1 py-2 text-center text-sm font-medium transition-colors',
               tab === t.key
-                ? 'text-green-700 border-b-2 border-green-600'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}>
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-muted-foreground hover:text-foreground'
+            )}>
             {t.label}
           </a>
         ))}

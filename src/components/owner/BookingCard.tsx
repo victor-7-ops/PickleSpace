@@ -2,7 +2,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sheet } from '@/components/ui/bottom-sheet'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { QRScanner } from './QRScanner'
 import type { Booking } from '@/types'
 
@@ -43,47 +45,52 @@ export function BookingCard({ booking }: { booking: Booking }) {
 
   return (
     <>
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <p className="font-semibold text-gray-900">{playerName}</p>
-            <p className="text-sm text-gray-500 mt-0.5">{timeRange}</p>
-            {booking.court && (
-              <p className="text-xs text-gray-400 mt-0.5">{(booking.court as { name?: string }).name}</p>
-            )}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <p className="font-semibold text-foreground">{playerName}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{timeRange}</p>
+              {booking.court && (
+                <p className="text-xs text-muted-foreground mt-0.5">{(booking.court as { name?: string }).name}</p>
+              )}
+            </div>
+            <Badge
+              variant={booking.booking_status === 'confirmed' ? 'secondary' : booking.booking_status === 'completed' ? 'outline' : 'destructive'}
+              className="capitalize"
+            >
+              {booking.booking_status}
+            </Badge>
           </div>
-          <StatusBadge status={booking.booking_status} />
-        </div>
 
-        <div className="flex items-center justify-between mt-3">
-          <div>
-            <span className="font-semibold text-green-700">₱{Number(booking.amount).toLocaleString()}</span>
-            <span className="text-xs text-gray-400 ml-1.5">
-              {booking.payment_method} · {booking.payment_status}
-            </span>
+          <div className="flex items-center justify-between mt-3">
+            <div>
+              <span className="font-semibold text-primary">₱{Number(booking.amount).toLocaleString()}</span>
+              <span className="text-xs text-muted-foreground ml-1.5">
+                {booking.payment_method} · {booking.payment_status}
+              </span>
+            </div>
+            <div className="flex gap-2">
+              {isCashUnpaid && (
+                <Button variant="outline" size="sm" onClick={handleMarkPaid} disabled={markingPaid}>
+                  {markingPaid ? 'Saving…' : 'Mark Paid'}
+                </Button>
+              )}
+              {isConfirmed && (
+                <Button variant="secondary" size="sm" onClick={() => { setScanResult(null); setScanOpen(true) }}>
+                  Scan QR
+                </Button>
+              )}
+            </div>
           </div>
-          <div className="flex gap-2">
-            {isCashUnpaid && (
-              <button onClick={handleMarkPaid} disabled={markingPaid}
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-yellow-50 text-yellow-700 border border-yellow-200 hover:bg-yellow-100 disabled:opacity-40">
-                {markingPaid ? 'Saving…' : 'Mark Paid'}
-              </button>
-            )}
-            {isConfirmed && (
-              <button onClick={() => { setScanResult(null); setScanOpen(true) }}
-                className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-green-50 text-green-700 border border-green-200 hover:bg-green-100">
-                Scan QR
-              </button>
-            )}
-          </div>
-        </div>
 
-        {scanResult && (
-          <p className={`mt-2 text-xs font-medium ${scanResult === 'success' ? 'text-green-700' : 'text-red-600'}`}>
-            {scanResult === 'success' ? '✓' : '✗'} {scanMessage}
-          </p>
-        )}
-      </div>
+          {scanResult && (
+            <p className={`mt-2 text-xs font-medium ${scanResult === 'success' ? 'text-primary' : 'text-destructive'}`}>
+              {scanResult === 'success' ? '✓' : '✗'} {scanMessage}
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       <Sheet open={scanOpen} onClose={() => setScanOpen(false)} title="Scan Player QR">
         <QRScanner onResult={handleScanResult} onClose={() => setScanOpen(false)} />

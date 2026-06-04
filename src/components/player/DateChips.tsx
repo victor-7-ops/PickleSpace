@@ -1,5 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 interface DateChipsProps {
   selected: string   // YYYY-MM-DD
@@ -32,19 +33,21 @@ export function DateChips({ selected }: DateChipsProps) {
         { label: 'Tomorrow', date: tomorrowStr },
       ].map(chip => (
         <button key={chip.date} onClick={() => go(chip.date)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={cn(
+            'px-4 py-2 rounded-full text-sm font-medium transition-colors',
             selected === chip.date
-              ? 'bg-green-600 text-white'
-              : 'bg-white border border-gray-200 text-gray-600 hover:border-green-400'
-          }`}>
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-background border border-border text-muted-foreground hover:border-primary/50'
+          )}>
           {chip.label}
         </button>
       ))}
-      <label className={`flex items-center px-4 py-2 rounded-full text-sm font-medium border cursor-pointer transition-colors ${
+      <label className={cn(
+        'flex items-center px-4 py-2 rounded-full text-sm font-medium border cursor-pointer transition-colors',
         selected !== todayStr && selected !== tomorrowStr
-          ? 'bg-green-600 text-white border-green-600'
-          : 'bg-white border-gray-200 text-gray-600 hover:border-green-400'
-      }`}>
+          ? 'bg-primary text-primary-foreground border-primary'
+          : 'bg-background border-border text-muted-foreground hover:border-primary/50'
+      )}>
         📅 Pick date
         <input type="date" className="sr-only" value={selected}
           min={todayStr}

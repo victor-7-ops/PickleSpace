@@ -39,10 +39,10 @@ export default async function NewGamePage({ searchParams }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
-        <Link href="/player/games" className="text-gray-400 hover:text-gray-600 text-lg">←</Link>
-        <span className="font-semibold text-gray-900">Post a Game</span>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-30 bg-background border-b border-border px-4 py-3 flex items-center gap-3">
+        <Link href="/player/games" className="text-muted-foreground hover:text-foreground text-lg">←</Link>
+        <span className="font-semibold text-foreground">Post a Game</span>
       </header>
       <div className="px-4 py-6 max-w-lg mx-auto">
         <CreateGameForm

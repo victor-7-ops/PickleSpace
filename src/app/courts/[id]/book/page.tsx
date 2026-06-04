@@ -52,13 +52,13 @@ export default async function BookPage({ params, searchParams }: Props) {
   const amount = court.hourly_rate * hours
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
-        <Link href={`/courts/${params.id}`} className="text-gray-400 hover:text-gray-600 text-sm">
+      <header className="sticky top-0 z-30 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
+        <Link href={`/courts/${params.id}`} className="text-muted-foreground hover:text-foreground text-sm">
           ← Back
         </Link>
-        <span className="font-semibold text-gray-900">Checkout</span>
+        <span className="font-semibold text-foreground">Checkout</span>
         <HoldTimer
           expiresAt={slot.hold_expires_at!}
           courtId={params.id}

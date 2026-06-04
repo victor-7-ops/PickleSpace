@@ -17,7 +17,7 @@ export default async function PlayerLayout({ children }: { children: React.React
   if (!profile || profile.role !== 'player') redirect('/owner')
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 pb-28">
         {children}
       </main>

@@ -55,15 +55,15 @@ export default async function CourtDetailPage({ params, searchParams }: Props) {
   })
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Sticky top bar */}
-      <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
-        <Link href={`/player/discover?date=${selectedDate}`} className="text-gray-400 hover:text-gray-600 text-lg">
+      <header className="sticky top-0 z-30 bg-background border-b border-border px-4 py-3 flex items-center gap-3">
+        <Link href={`/player/discover?date=${selectedDate}`} className="text-muted-foreground hover:text-foreground text-lg">
           ←
         </Link>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-900 truncate">{court.name}</p>
-          <p className="text-xs text-green-700 font-medium">₱{court.hourly_rate.toLocaleString()}/hr</p>
+          <p className="font-semibold text-foreground truncate">{court.name}</p>
+          <p className="text-xs text-primary font-medium">₱{court.hourly_rate.toLocaleString()}/hr</p>
         </div>
       </header>
 
@@ -84,8 +84,8 @@ export default async function CourtDetailPage({ params, searchParams }: Props) {
               <Link key={d} href={`/courts/${params.id}?date=${d}`}
                 className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                   d === selectedDate
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-200 text-gray-600 hover:border-green-400'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-border text-muted-foreground hover:border-primary/50'
                 }`}>
                 {label}
               </Link>

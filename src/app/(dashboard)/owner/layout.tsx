@@ -69,7 +69,7 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
   const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-muted flex flex-col">
       <header className="sticky top-0 z-40 bg-green-600 text-white shadow-md">
         <div className="px-4 pt-4 pb-2">
           <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>

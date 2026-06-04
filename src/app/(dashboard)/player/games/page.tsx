@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/server'
 import { GameCard } from '@/components/player/GameCard'
 import { GamesFilter } from '@/components/player/GamesFilter'
@@ -71,25 +73,23 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-gray-900">Games</h1>
         {tab === 'discover' && (
-          <Link href="/games/new"
-            className="bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-xl hover:bg-green-700 transition-colors">
-            + Post Game
-          </Link>
+          <Link href="/games/new" className={buttonVariants({ size: 'sm' })}>+ Post Game</Link>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-4">
+      <div className="flex border-b border-border mb-4">
         {[
           { key: 'discover', label: 'Discover' },
           { key: 'mine',     label: 'My Games' },
         ].map(t => (
           <a key={t.key} href={`/player/games?tab=${t.key}`}
-            className={`flex-1 py-2 text-center text-sm font-medium transition-colors ${
+            className={cn(
+              'flex-1 py-2 text-center text-sm font-medium transition-colors',
               tab === t.key
-                ? 'text-green-700 border-b-2 border-green-600'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}>
+                ? 'text-primary border-b-2 border-primary'
+                : 'text-muted-foreground hover:text-foreground'
+            )}>
             {t.label}
           </a>
         ))}
@@ -107,14 +107,11 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
       ) : (
         <div className="flex flex-col gap-6">
           {myGames.length === 0 ? (
-            <div className="text-center py-16 text-gray-400">
+            <div className="text-center py-16">
               <p className="text-4xl mb-3">🏓</p>
-              <p className="font-medium text-gray-600 mb-1">No games yet</p>
-              <p className="text-sm mb-4">Browse Discover to find a game to join.</p>
-              <a href="/player/games?tab=discover"
-                className="bg-green-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-green-700">
-                Browse games
-              </a>
+              <p className="font-semibold text-foreground mb-1">No games yet</p>
+              <p className="text-sm text-muted-foreground mb-4">Browse Discover to find a game to join.</p>
+              <a href="/player/games?tab=discover" className={buttonVariants()}>Browse games</a>
             </div>
           ) : (
             <>

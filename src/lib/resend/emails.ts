@@ -1,7 +1,11 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
 const FROM = 'PickleSpace <noreply@picklespace.ph>'
+
+// Lazy init — avoids crashing at build time when env var isn't present
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY!)
+}
 
 export async function sendBookingConfirmation(opts: {
   to: string
@@ -14,7 +18,7 @@ export async function sendBookingConfirmation(opts: {
   qrCode: string
   bookingId: string
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: opts.to,
     subject: `Booking Confirmed — ${opts.courtName}`,
@@ -38,7 +42,7 @@ export async function sendBookingCancellation(opts: {
   date: string
   refundAmount?: number
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: opts.to,
     subject: `Booking Cancelled — ${opts.courtName}`,

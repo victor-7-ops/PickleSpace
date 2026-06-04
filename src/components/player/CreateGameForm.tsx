@@ -1,6 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 type SkillLevel = 'open' | 'beginner' | 'intermediate' | 'advanced'
 
@@ -13,9 +19,7 @@ interface CreateGameFormProps {
   slotEnd?: string
 }
 
-export function CreateGameForm({
-  courtId, courtName, slotId, slotDate, slotStart, slotEnd,
-}: CreateGameFormProps) {
+export function CreateGameForm({ courtId, courtName, slotId, slotDate, slotStart, slotEnd }: CreateGameFormProps) {
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [skill, setSkill] = useState<SkillLevel>('open')
@@ -35,14 +39,7 @@ export function CreateGameForm({
       const res = await fetch('/api/games', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          courtId,
-          slotId,
-          title: title.trim(),
-          description: description.trim() || undefined,
-          skillLevel: skill,
-          maxPlayers,
-        }),
+        body: JSON.stringify({ courtId, slotId, title: title.trim(), description: description.trim() || undefined, skillLevel: skill, maxPlayers }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error)
@@ -57,48 +54,51 @@ export function CreateGameForm({
     return (
       <div className="text-center py-16">
         <p className="text-4xl mb-4">🏟</p>
-        <p className="font-semibold text-gray-900 mb-2">Book a court first</p>
-        <p className="text-sm text-gray-500 mb-6">
-          You need a confirmed court booking to post an open game.
-        </p>
-        <a href="/player/discover"
-          className="bg-green-600 text-white text-sm font-semibold px-6 py-3 rounded-xl hover:bg-green-700 transition-colors">
-          Find a Court →
-        </a>
+        <p className="font-semibold text-foreground mb-2">Book a court first</p>
+        <p className="text-sm text-muted-foreground mb-6">You need a confirmed court booking to post an open game.</p>
+        <a href="/player/discover" className={cn(buttonVariants())}>Find a Court →</a>
       </div>
     )
   }
 
   const SKILL_OPTIONS: { value: SkillLevel; label: string }[] = [
-    { value: 'open',         label: 'Open' },
-    { value: 'beginner',     label: 'Beginner' },
+    { value: 'open', label: 'Open' },
+    { value: 'beginner', label: 'Beginner' },
     { value: 'intermediate', label: 'Inter.' },
-    { value: 'advanced',     label: 'Advanced' },
+    { value: 'advanced', label: 'Advanced' },
   ]
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <div className="bg-green-50 border border-green-200 rounded-2xl p-4">
-        <p className="font-semibold text-gray-900">{courtName}</p>
-        <p className="text-sm text-gray-600 mt-0.5">{slotDate} · {slotStart} – {slotEnd}</p>
-        <p className="text-xs text-green-700 font-medium mt-1">already booked ✓</p>
+      <Card className="border-primary/30 bg-secondary">
+        <CardContent className="p-4">
+          <p className="font-semibold text-foreground">{courtName}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{slotDate} · {slotStart} – {slotEnd}</p>
+          <p className="text-xs text-primary font-medium mt-1">already booked ✓</p>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="title">Game title *</Label>
+        <Input
+          id="title"
+          required
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="e.g. Casual doubles, anyone welcome"
+        />
       </div>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-semibold text-gray-700">Game title *</span>
-        <input required value={title} onChange={e => setTitle(e.target.value)}
-          placeholder="e.g. Casual doubles, anyone welcome"
-          className="border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </label>
-
       <div>
-        <p className="text-sm font-semibold text-gray-700 mb-2">Skill level</p>
+        <Label className="mb-2 block">Skill level</Label>
         <div className="flex gap-2">
           {SKILL_OPTIONS.map(o => (
             <button key={o.value} type="button" onClick={() => setSkill(o.value)}
-              className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-colors ${
-                skill === o.value ? 'bg-green-600 text-white border-green-600' : 'border-gray-200 text-gray-600 hover:border-green-300'
-              }`}>
+              className={cn('flex-1 py-2 rounded-xl text-xs font-semibold border transition-colors',
+                skill === o.value
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'border-border text-muted-foreground hover:border-primary/50'
+              )}>
               {o.label}
             </button>
           ))}
@@ -106,34 +106,39 @@ export function CreateGameForm({
       </div>
 
       <div>
-        <p className="text-sm font-semibold text-gray-700 mb-2">Max players</p>
+        <Label className="mb-2 block">Max players</Label>
         <div className="flex gap-2">
           {[2, 4, 6].map(n => (
             <button key={n} type="button" onClick={() => setMaxPlayers(n)}
-              className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
-                maxPlayers === n ? 'bg-green-600 text-white border-green-600' : 'border-gray-200 text-gray-600 hover:border-green-300'
-              }`}>
+              className={cn('flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors',
+                maxPlayers === n
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'border-border text-muted-foreground hover:border-primary/50'
+              )}>
               {n}
             </button>
           ))}
         </div>
       </div>
 
-      <label className="flex flex-col gap-1">
-        <span className="text-sm font-semibold text-gray-700">
-          Description <span className="text-gray-400 font-normal">(optional)</span>
-        </span>
-        <textarea value={description} onChange={e => setDescription(e.target.value)}
-          rows={2} placeholder="e.g. Bring your own paddle, parking available"
-          className="border border-gray-300 rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-green-500" />
-      </label>
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="description">
+          Description <span className="text-muted-foreground font-normal">(optional)</span>
+        </Label>
+        <Textarea
+          id="description"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          rows={2}
+          placeholder="e.g. Bring your own paddle, parking available"
+        />
+      </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
-      <button type="submit" disabled={loading || !title.trim()}
-        className="w-full py-3.5 bg-green-600 text-white rounded-xl font-semibold text-sm hover:bg-green-700 disabled:opacity-40 transition-colors">
+      <Button type="submit" disabled={loading || !title.trim()} className="w-full" size="lg">
         {loading ? 'Posting…' : 'Post Game →'}
-      </button>
+      </Button>
     </form>
   )
 }

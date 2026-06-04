@@ -1,7 +1,18 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 type ActionState = 'can-join' | 'joined' | 'full' | 'host' | 'cancelled' | 'unauthenticated'
 
@@ -14,7 +25,6 @@ export function GameActions({ gameId, actionState }: GameActionsProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [cancelOpen, setCancelOpen] = useState(false)
 
   async function callApi(path: string) {
     setError('')
@@ -31,77 +41,67 @@ export function GameActions({ gameId, actionState }: GameActionsProps) {
     }
   }
 
-  async function handleCancel() {
-    setCancelOpen(false)
-    await callApi('cancel')
-  }
-
   return (
     <div className="flex flex-col gap-2">
-      {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+      {error && <p className="text-sm text-destructive text-center">{error}</p>}
 
       {actionState === 'can-join' && (
-        <button onClick={() => callApi('join')} disabled={loading}
-          className="w-full py-3.5 bg-green-600 text-white rounded-xl font-semibold text-sm hover:bg-green-700 disabled:opacity-40 transition-colors">
+        <Button onClick={() => callApi('join')} disabled={loading} className="w-full" size="lg">
           {loading ? 'Joining…' : 'Join Game →'}
-        </button>
+        </Button>
       )}
 
       {actionState === 'joined' && (
         <div className="flex flex-col gap-2">
-          <div className="text-center py-2 text-green-700 font-semibold text-sm">✓ You&apos;re in!</div>
-          <button onClick={() => callApi('leave')} disabled={loading}
-            className="w-full py-2.5 border border-gray-200 text-gray-500 rounded-xl text-sm font-medium hover:bg-gray-50 disabled:opacity-40">
+          <p className="text-center text-sm font-semibold text-primary">✓ You&apos;re in!</p>
+          <Button variant="outline" onClick={() => callApi('leave')} disabled={loading} className="w-full">
             {loading ? 'Leaving…' : 'Leave Game'}
-          </button>
+          </Button>
         </div>
       )}
 
       {actionState === 'full' && (
-        <button disabled
-          className="w-full py-3.5 bg-gray-100 text-gray-400 rounded-xl font-semibold text-sm cursor-not-allowed">
-          Game Full
-        </button>
+        <Button disabled className="w-full" size="lg">Game Full</Button>
       )}
 
       {actionState === 'host' && (
-        <button onClick={() => setCancelOpen(true)} disabled={loading}
-          className="w-full py-3.5 bg-red-50 text-red-600 border border-red-200 rounded-xl font-semibold text-sm hover:bg-red-100 disabled:opacity-40 transition-colors">
-          {loading ? 'Cancelling…' : 'Cancel Game'}
-        </button>
+        <AlertDialog>
+          <AlertDialogTrigger className="w-full">
+            <Button variant="destructive" disabled={loading} className="w-full" size="lg">
+              {loading ? 'Cancelling…' : 'Cancel Game'}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Cancel this game?</AlertDialogTitle>
+              <AlertDialogDescription>
+                All joined players will see the game marked as cancelled.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Keep Game</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => callApi('cancel')}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Yes, Cancel
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
 
       {actionState === 'unauthenticated' && (
-        <a href={`/login?next=/games/${gameId}`}
-          className="block w-full py-3.5 bg-green-600 text-white rounded-xl font-semibold text-sm text-center hover:bg-green-700 transition-colors">
+        <Button className="w-full" size="lg" onClick={() => router.push(`/login?next=/games/${gameId}`)}>
           Log in to join →
-        </a>
+        </Button>
       )}
 
       {actionState === 'cancelled' && (
-        <div className="w-full py-3 bg-gray-50 border border-gray-100 rounded-xl text-center text-sm text-gray-400">
+        <p className="text-center text-sm text-muted-foreground py-3 border border-border rounded-xl">
           This game has been cancelled
-        </div>
+        </p>
       )}
-
-      {/* Cancel confirmation sheet */}
-      <Sheet open={cancelOpen} onClose={() => setCancelOpen(false)} title="Cancel Game">
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-gray-600">
-            Cancel this game? All joined players will see the game marked as cancelled.
-          </p>
-          <div className="flex gap-3">
-            <button onClick={() => setCancelOpen(false)}
-              className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">
-              Keep Game
-            </button>
-            <button onClick={handleCancel}
-              className="flex-1 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700">
-              Yes, Cancel
-            </button>
-          </div>
-        </div>
-      </Sheet>
     </div>
   )
 }

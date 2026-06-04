@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { Card, CardContent } from '@/components/ui/card'
 import type { GamePlayer } from '@/types'
 
 interface GamePlayersProps {
@@ -36,8 +37,8 @@ export function GamePlayers({ gameId, maxPlayers, initialPlayers, hostId }: Game
   const emptySlots = Math.max(0, maxPlayers - filledCount)
 
   return (
-    <div className="bg-gray-50 rounded-2xl p-4">
-      <p className="text-sm font-semibold text-gray-700 mb-3">
+    <Card><CardContent className="p-4">
+      <p className="text-sm font-semibold text-foreground mb-3">
         Players ({filledCount}/{maxPlayers})
       </p>
 
@@ -84,6 +85,6 @@ export function GamePlayers({ gameId, maxPlayers, initialPlayers, hostId }: Game
           </div>
         ))}
       </div>
-    </div>
+    </CardContent></Card>
   )
 }

@@ -3,6 +3,10 @@ import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -30,36 +34,49 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-green-600">PickleSpace</h1>
-          <p className="text-sm text-gray-500 mt-1">Log in to your account</p>
-        </div>
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Email</span>
-            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="you@example.com" />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Password</span>
-            <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="••••••••" />
-          </label>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button type="submit" disabled={loading}
-            className="w-full py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold hover:bg-green-700 disabled:opacity-40 transition-colors">
-            {loading ? 'Logging in…' : 'Log in'}
-          </button>
-        </form>
-        <p className="text-center text-sm text-gray-500 mt-4">
-          No account?{' '}
-          <Link href="/register" className="text-green-600 font-medium hover:underline">Sign up</Link>
-        </p>
-      </div>
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl text-primary">PickleSpace 🏓</CardTitle>
+          <CardDescription>Log in to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? 'Logging in…' : 'Log in'}
+            </Button>
+          </form>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            No account?{' '}
+            <Link href="/register" className="text-primary font-medium hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

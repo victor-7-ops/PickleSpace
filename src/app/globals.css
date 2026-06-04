@@ -91,3 +91,15 @@
     @apply font-sans;
   }
 }
+
+@layer utilities {
+  .card-interactive {
+    @apply transition-all duration-150 ease-out;
+  }
+  .card-interactive:hover {
+    @apply -translate-y-0.5;
+  }
+  .card-interactive:active {
+    @apply translate-y-0 scale-[0.99];
+  }
+}

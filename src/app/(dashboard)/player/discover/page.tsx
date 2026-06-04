@@ -44,7 +44,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
         <div className="flex flex-col gap-3">
           {sorted.map(court => (
             <Link key={court.id} href={`/courts/${court.id}?date=${date}`}>
-              <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
+              <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer card-interactive">
                 {court.images[0] && (
                   <div className="h-36 overflow-hidden">
                     <img src={court.images[0]} alt={court.name} className="w-full h-full object-cover" />

@@ -19,7 +19,7 @@ export function GameCard({ game, showRole }: GameCardProps) {
 
   return (
     <Link href={`/games/${game.id}`}>
-      <Card className={`hover:shadow-md transition-shadow cursor-pointer ${isCancelled ? 'opacity-50' : ''}`}>
+      <Card className={`hover:shadow-md transition-shadow cursor-pointer card-interactive ${isCancelled ? 'opacity-50' : ''}`}>
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">

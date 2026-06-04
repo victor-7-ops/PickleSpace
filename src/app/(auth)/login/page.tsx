@@ -65,7 +65,10 @@ export default function LoginPage() {
               />
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full gap-2">
+              {loading && (
+                <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              )}
               {loading ? 'Logging in…' : 'Log in'}
             </Button>
           </form>

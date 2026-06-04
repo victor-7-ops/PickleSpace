@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -5,6 +6,7 @@ import { createClient } from '@/lib/supabase/server'
 import { GameCard } from '@/components/player/GameCard'
 import { GamesFilter } from '@/components/player/GamesFilter'
 import { GamesFeed } from '@/components/player/GamesFeed'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { Game } from '@/types'
 
 interface Props {
@@ -97,7 +99,9 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
 
       {tab === 'discover' ? (
         <>
-          <GamesFilter playerSkillLevel={playerSkillLevel} />
+          <Suspense fallback={<div className="flex gap-2 mb-4"><Skeleton className="h-6 w-12 rounded-full" /><Skeleton className="h-6 w-14 rounded-full" /><Skeleton className="h-6 w-20 rounded-full" /></div>}>
+            <GamesFilter playerSkillLevel={playerSkillLevel} />
+          </Suspense>
           <GamesFeed
             initialGames={(openGames ?? []) as Game[]}
             filter={filter}

@@ -57,7 +57,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
                       <p className="text-sm text-muted-foreground mt-0.5">{court.city}</p>
                     </div>
                     <div className="text-right flex-shrink-0">
-                      <p className="font-bold text-primary">
+                      <p className="font-bold text-primary tabular-nums">
                         ₱{court.hourly_rate.toLocaleString()}
                         <span className="text-xs font-normal text-muted-foreground">/hr</span>
                       </p>

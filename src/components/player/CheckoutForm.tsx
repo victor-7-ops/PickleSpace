@@ -73,7 +73,7 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
           </p>
           <p className="text-sm text-muted-foreground">{startTime} – {endTime}</p>
           <Separator className="my-3" />
-          <p className="text-2xl font-bold text-primary">₱{amount.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-primary tabular-nums">₱{amount.toLocaleString()}</p>
         </CardContent>
       </Card>
 
@@ -118,7 +118,7 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
       {error && <p className="text-sm text-destructive">{error}</p>}
 
       <Button onClick={handleConfirm} disabled={loading} className="w-full" size="lg">
-        {loading ? 'Processing…' : `Confirm & Pay ₱${amount.toLocaleString()} →`}
+        {loading ? 'Processing…' : <span className="tabular-nums">Confirm & Pay ₱{amount.toLocaleString()} →</span>}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">

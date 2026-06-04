@@ -65,8 +65,8 @@ export default async function EarningsPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
             {now.toLocaleDateString('en-PH', { month: 'long', year: 'numeric' })} Earnings
           </p>
-          <p className="text-4xl font-bold text-primary">₱{grossThisMonth.toLocaleString()}</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-4xl font-bold text-primary tabular-nums">₱{grossThisMonth.toLocaleString()}</p>
+          <p className="text-sm text-muted-foreground mt-1 tabular-nums">
             You keep ₱{netThisMonth.toLocaleString()} after 10% platform fee
           </p>
           {momChange !== null && (

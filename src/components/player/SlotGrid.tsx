@@ -83,7 +83,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
         {available.map(slot => (
           <button key={slot.id} onClick={() => handleSlotTap(slot)}
             disabled={!!holding}
-            className="w-full flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 hover:bg-green-100 transition-colors disabled:opacity-60">
+            className="w-full min-h-[44px] flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 hover:bg-green-100 transition-colors disabled:opacity-60">
             <span className="font-semibold text-green-800 text-sm">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>
@@ -98,7 +98,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
         ))}
         {unavailable.map(slot => (
           <div key={slot.id}
-            className="w-full flex items-center justify-between bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 opacity-50">
+            className="w-full min-h-[44px] flex items-center justify-between bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 opacity-50">
             <span className="text-sm text-gray-500">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>

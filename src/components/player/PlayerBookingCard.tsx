@@ -40,7 +40,7 @@ export function PlayerBookingCard({ booking, qrDataUrl }: PlayerBookingCardProps
           </div>
           <div className="flex items-center justify-between mt-3">
             <div>
-              <span className="font-bold text-primary">₱{Number(booking.amount).toLocaleString()}</span>
+              <span className="font-bold text-primary tabular-nums">₱{Number(booking.amount).toLocaleString()}</span>
               <span className="text-xs text-muted-foreground ml-1.5">{booking.payment_method}</span>
             </div>
             {showQr && (

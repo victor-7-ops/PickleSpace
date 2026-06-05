@@ -28,19 +28,21 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  try {
-    const { data: { user } } = await supabase.auth.getUser()
+  // Only hit Supabase on routes that actually need auth — skip the network call everywhere else
+  const protectedPaths = ['/owner', '/player', '/bookings']
+  const isProtected = protectedPaths.some(p => request.nextUrl.pathname.startsWith(p))
 
-    const protectedPaths = ['/owner', '/player', '/bookings']
-    const isProtected = protectedPaths.some(p => request.nextUrl.pathname.startsWith(p))
-
-    if (!user && isProtected) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
+  if (isProtected) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        const url = request.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.redirect(url)
+      }
+    } catch {
+      // If Supabase auth fails, don't block the request
     }
-  } catch {
-    // If Supabase auth fails, don't block the request
   }
 
   return supabaseResponse

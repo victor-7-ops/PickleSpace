@@ -33,8 +33,7 @@ export default function RegisterPage() {
       setLoading(false)
       return
     }
-    router.push(role === 'owner' ? '/owner/courts' : '/player/discover')
-    router.refresh()
+    window.location.href = role === 'owner' ? '/owner/courts' : '/player/discover'
   }
 
   return (

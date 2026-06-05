@@ -30,8 +30,8 @@ function LoginForm() {
       setLoading(false)
       return
     }
-    router.push(next)
-    router.refresh()
+    // Hard redirect — sends fresh auth cookie to server immediately, no double RSC fetch
+    window.location.href = next
   }
 
   return (

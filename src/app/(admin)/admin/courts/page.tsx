@@ -1,10 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CourtActions } from '@/components/admin/CourtActions'
 
 export default async function AdminCourtsPage() {
-  const supabase = await createClient()
+  // Use service-role client to bypass RLS and see ALL courts
+  const supabase = createAdminClient()
 
   const { data: courts } = await supabase
     .from('courts')

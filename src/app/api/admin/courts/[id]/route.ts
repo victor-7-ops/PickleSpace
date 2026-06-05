@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 const ADMIN_EMAIL = 'gadianavictor@gmail.com'
 
@@ -7,10 +8,9 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const supabase = await createClient()
-
-  // Guard: only the admin email can call this
-  const { data: { user } } = await supabase.auth.getUser()
+  // Verify caller is the admin (uses session client)
+  const sessionClient = await createClient()
+  const { data: { user } } = await sessionClient.auth.getUser()
   if (!user || user.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
@@ -21,6 +21,8 @@ export async function PATCH(
     return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
   }
 
+  // Use service-role client to bypass RLS for the update
+  const supabase = createAdminClient()
   const { error } = await supabase
     .from('courts')
     .update({ status })

@@ -33,7 +33,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
 
           {/* Sheet */}
           <motion.div
-            className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl shadow-xl max-h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 z-50 glass-heavy rounded-t-2xl shadow-2xl max-h-[90vh] flex flex-col"
             variants={slideUp}
             initial="hidden"
             animate="visible"

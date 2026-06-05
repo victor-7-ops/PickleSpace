@@ -110,6 +110,30 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Liquid Glass — web adaptation of iOS 26 glass material */
+  .glass {
+    background: hsl(var(--background) / 0.75);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Stronger glass — for overlays and panels */
+  .glass-heavy {
+    background: hsl(var(--background) / 0.88);
+    backdrop-filter: blur(24px) saturate(200%);
+    -webkit-backdrop-filter: blur(24px) saturate(200%);
+    border: 1px solid hsl(var(--border) / 0.4);
+  }
+
+  /* Primary tinted glass — for brand surfaces */
+  .glass-primary {
+    background: hsl(var(--primary) / 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
 }
 
 @keyframes slide-up {

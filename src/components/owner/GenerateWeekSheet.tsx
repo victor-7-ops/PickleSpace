@@ -17,8 +17,8 @@ interface GenerateWeekSheetProps {
 
 export function GenerateWeekSheet({ open, onClose, courtId, weekStart }: GenerateWeekSheetProps) {
   const router = useRouter()
-  const [openFrom, setOpenFrom] = useState('06:00')
-  const [openUntil, setOpenUntil] = useState('22:00')
+  const [openFrom, setOpenFrom] = useState('00:00')
+  const [openUntil, setOpenUntil] = useState('23:00')
   const [duration, setDuration] = useState(1)
   const [days, setDays] = useState<number[]>([1, 2, 3, 4, 5, 6])
   const [saving, setSaving] = useState(false)
@@ -32,7 +32,8 @@ export function GenerateWeekSheet({ open, onClose, courtId, weekStart }: Generat
   const slotCount = (() => {
     const [oh] = openFrom.split(':').map(Number)
     const [ch] = openUntil.split(':').map(Number)
-    const slotsPerDay = Math.floor((ch - oh) / duration)
+    const hoursOpen = ch > oh ? ch - oh : 24 - oh + ch // handles midnight wrap
+    const slotsPerDay = Math.max(0, Math.floor(hoursOpen / duration))
     return slotsPerDay * days.length
   })()
 

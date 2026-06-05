@@ -5,7 +5,15 @@ import { SlotSheet } from './SlotSheet'
 import { GenerateWeekSheet } from './GenerateWeekSheet'
 import type { Court, Slot, Booking } from '@/types'
 
-const HOURS = Array.from({ length: 16 }, (_, i) => i + 6)
+/** Derive visible hour range from actual slot data + 1hr padding each side. Falls back to 6–22. */
+function getHourRange(slots: Slot[]): number[] {
+  if (slots.length === 0) return Array.from({ length: 17 }, (_, i) => i + 6) // 6am–10pm
+  const hours = slots.map(s => parseInt(s.start_time.split(':')[0], 10))
+  const endHours = slots.map(s => parseInt(s.end_time.split(':')[0], 10))
+  const min = Math.max(0, Math.min(...hours) - 1)
+  const max = Math.min(23, Math.max(...endHours))
+  return Array.from({ length: max - min + 1 }, (_, i) => i + min)
+}
 
 function getWeekDates(weekStart: Date): Date[] {
   return Array.from({ length: 7 }, (_, i) => {
@@ -40,6 +48,10 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
   const slotMap = new Map<string, Slot>()
   initialSlots.forEach(s => slotMap.set(`${s.date}-${s.start_time}`, s))
   realtimeSlots.forEach(s => slotMap.set(`${s.date}-${s.start_time}`, s))
+
+  // Dynamic hour range — expands to 24h for round-the-clock courts
+  const allSlots = [...initialSlots, ...realtimeSlots]
+  const HOURS = getHourRange(allSlots)
 
   const [sheetSlot, setSheetSlot] = useState<Slot | null>(null)
   const [newCell, setNewCell] = useState<{ date: string; hour: number } | null>(null)

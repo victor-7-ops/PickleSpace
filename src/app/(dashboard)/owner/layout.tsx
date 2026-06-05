@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { SignOutButton } from '@/components/ui/sign-out-button'
 
 async function getOwnerStats(userId: string) {
   const supabase = await createClient()
@@ -72,7 +73,12 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-muted flex flex-col">
       <header className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-md">
         <div className="px-4 pt-4 pb-2">
-          <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>
+          <div className="flex items-center justify-between">
+            <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>
+            <SignOutButton className="text-xs text-green-200 hover:text-white transition-colors">
+              Sign out
+            </SignOutButton>
+          </div>
           <div className="flex gap-4 mt-1 text-sm text-green-100">
             <span>📅 {stats.bookingsToday} booking{stats.bookingsToday !== 1 ? 's' : ''} today</span>
             <span>💰 ₱{stats.revenueThisWeek.toLocaleString()} this week</span>

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { SignOutButton } from '@/components/ui/sign-out-button'
 import Link from 'next/link'
 
 const ADMIN_EMAIL = 'gadianavictor@gmail.com'
@@ -21,6 +22,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         <span className="font-bold text-sm">PickleSpace Admin</span>
         <span className="ml-auto text-xs opacity-50 hidden sm:block">{user.email}</span>
+        <SignOutButton className="text-xs text-background/60 hover:text-background transition-colors ml-3">
+          Sign out
+        </SignOutButton>
       </header>
 
       {/* Nav tabs */}

@@ -22,18 +22,23 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name, role } },
-    })
-    if (error) {
-      setError(error.message)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name, role } },
+      })
+      if (error) {
+        setError(error.message)
+        return
+      }
+      window.location.href = role === 'owner' ? '/owner/courts' : '/player/discover'
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
       setLoading(false)
-      return
     }
-    window.location.href = role === 'owner' ? '/owner/courts' : '/player/discover'
   }
 
   return (

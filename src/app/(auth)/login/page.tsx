@@ -23,15 +23,23 @@ function LoginForm() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
+    try {
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        setError('App is not configured yet. Please try again later.')
+        return
+      }
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error) {
+        setError(error.message)
+        return
+      }
+      window.location.href = next
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
       setLoading(false)
-      return
     }
-    // Hard redirect — sends fresh auth cookie to server immediately, no double RSC fetch
-    window.location.href = next
   }
 
   return (

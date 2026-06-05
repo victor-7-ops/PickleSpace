@@ -53,19 +53,27 @@ export default function AdminLoginPage() {
           <div className="flex flex-col gap-1.5">
             <Label className="text-background/70 text-xs uppercase tracking-wide">Email</Label>
             <Input
+              id="admin-email"
               type="email"
+              name="email"
+              autoComplete="email"
+              spellCheck={false}
               required
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="admin@picklespace.com"
+              aria-describedby={error ? 'admin-error' : undefined}
               className="bg-background/10 border-background/20 text-background placeholder:text-background/30 focus-visible:ring-primary"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label className="text-background/70 text-xs uppercase tracking-wide">Password</Label>
+            <Label htmlFor="admin-password" className="text-background/70 text-xs uppercase tracking-wide">Password</Label>
             <Input
+              id="admin-password"
               type="password"
+              name="password"
+              autoComplete="current-password"
               required
               value={password}
               onChange={e => setPassword(e.target.value)}
@@ -75,7 +83,7 @@ export default function AdminLoginPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-400">{error}</p>
+            <p id="admin-error" role="alert" className="text-sm text-red-400">{error}</p>
           )}
 
           <Button type="submit" disabled={loading} className="w-full mt-2">

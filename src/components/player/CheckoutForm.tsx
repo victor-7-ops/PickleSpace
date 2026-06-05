@@ -78,15 +78,16 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
       </Card>
 
       <div>
-        <Label className="mb-2 block">Pay with</Label>
-        <div className="flex gap-3">
+        <Label id="payment-method-label" className="mb-2 block">Pay with</Label>
+        <div role="group" aria-labelledby="payment-method-label" className="flex gap-3">
           {METHODS.map(m => (
             <button
               key={m.id}
               type="button"
+              aria-pressed={method === m.id}
               onClick={() => setMethod(m.id)}
               className={cn(
-                'flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border transition-colors',
+                'flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 method === m.id
                   ? 'border-primary bg-secondary'
                   : 'border-border hover:border-primary/50'

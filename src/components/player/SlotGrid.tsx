@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion } from 'motion/react'
 import { useSlotRealtime } from '@/hooks/useSlotRealtime'
 import type { Slot } from '@/types'
 
@@ -81,8 +82,12 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
       )}
       <div className="flex flex-col gap-2">
         {available.map(slot => (
-          <button key={slot.id} onClick={() => handleSlotTap(slot)}
+          <motion.button
+            key={slot.id}
+            onClick={() => handleSlotTap(slot)}
             disabled={!!holding}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1 }}
             className="w-full min-h-[44px] flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 hover:bg-green-100 transition-colors disabled:opacity-60">
             <span className="font-semibold text-green-800 text-sm">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
@@ -94,7 +99,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
                 : <span className="text-xs text-green-600 font-medium">Book →</span>
               }
             </div>
-          </button>
+          </motion.button>
         ))}
         {unavailable.map(slot => (
           <div key={slot.id}

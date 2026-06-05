@@ -1,7 +1,8 @@
 'use client'
 import { Suspense, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { motion, useReducedMotion } from 'motion/react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,14 +11,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Skeleton } from '@/components/ui/skeleton'
 
 function LoginForm() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const next = searchParams.get('next') ?? '/player/discover'
+  const reduce = useReducedMotion()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [shakeKey, setShakeKey] = useState(0)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -32,18 +34,26 @@ function LoginForm() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) {
         setError(error.message)
+        setShakeKey(k => k + 1) // trigger shake
         return
       }
       window.location.href = next
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setShakeKey(k => k + 1)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleLogin} className="flex flex-col gap-4">
+    <motion.form
+      key={shakeKey}
+      onSubmit={handleLogin}
+      className="flex flex-col gap-4"
+      animate={error && !reduce ? { x: [0, -8, 8, -6, 6, -3, 3, 0] } : {}}
+      transition={{ duration: 0.45, ease: 'easeInOut' }}
+    >
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="email">Email</Label>
         <Input
@@ -66,14 +76,24 @@ function LoginForm() {
           placeholder="••••••••"
         />
       </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={loading} className="w-full gap-2">
-        {loading && (
-          <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        )}
-        {loading ? 'Logging in…' : 'Log in'}
-      </Button>
-    </form>
+      {error && (
+        <motion.p
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-sm text-destructive"
+        >
+          {error}
+        </motion.p>
+      )}
+      <motion.div whileTap={reduce ? {} : { scale: 0.98 }}>
+        <Button type="submit" disabled={loading} className="w-full gap-2">
+          {loading && (
+            <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          )}
+          {loading ? 'Logging in…' : 'Log in'}
+        </Button>
+      </motion.div>
+    </motion.form>
   )
 }
 

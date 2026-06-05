@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
 
 const TABS = [
@@ -29,18 +30,23 @@ export function BottomNav() {
                 isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               )}
             >
+              {/* Sliding active indicator — layoutId shared across tabs */}
+              {isActive && (
+                <motion.span
+                  layoutId="nav-indicator"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
               <span className="text-xl leading-none">{tab.icon}</span>
               <span className={cn('text-[10px] font-semibold', isActive ? 'text-primary' : '')}>
                 {tab.label}
               </span>
-              {isActive && (
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-primary rounded-full" />
-              )}
             </Link>
           )
         })}
 
-        {/* Sign out — form POST so it always works */}
+        {/* Sign out */}
         <form method="POST" action="/api/auth/signout?redirect=/login" className="flex-1">
           <button type="submit"
             className="w-full min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors">

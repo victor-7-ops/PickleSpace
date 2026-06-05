@@ -2,7 +2,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/supabase/client'
 
 const TABS = [
   { href: '/player/discover', label: 'Discover', icon: '🏟' },
@@ -12,12 +11,6 @@ const TABS = [
 
 export function BottomNav() {
   const pathname = usePathname()
-
-  async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    window.location.href = '/login'
-  }
 
   return (
     <nav
@@ -47,14 +40,14 @@ export function BottomNav() {
           )
         })}
 
-        {/* Sign out */}
-        <button
-          onClick={handleSignOut}
-          className="flex-1 min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <span className="text-xl leading-none">🚪</span>
-          <span className="text-[10px] font-semibold">Sign out</span>
-        </button>
+        {/* Sign out — form POST so it always works */}
+        <form method="POST" action="/api/auth/signout?redirect=/login" className="flex-1">
+          <button type="submit"
+            className="w-full min-h-[56px] flex flex-col items-center justify-center gap-0.5 text-muted-foreground hover:text-foreground transition-colors">
+            <span className="text-xl leading-none">🚪</span>
+            <span className="text-[10px] font-semibold">Sign out</span>
+          </button>
+        </form>
       </div>
     </nav>
   )

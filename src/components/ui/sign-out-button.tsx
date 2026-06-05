@@ -1,21 +1,20 @@
 'use client'
-import { createClient } from '@/lib/supabase/client'
 
 interface SignOutButtonProps {
   className?: string
   children?: React.ReactNode
+  redirectTo?: string
 }
 
-export function SignOutButton({ className, children }: SignOutButtonProps) {
-  async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    window.location.href = '/login'
-  }
-
+/**
+ * Signs out via POST /api/auth/signout — server-side, works in all browsers.
+ */
+export function SignOutButton({ className, children, redirectTo = '/login' }: SignOutButtonProps) {
   return (
-    <button onClick={handleSignOut} className={className}>
-      {children ?? 'Sign out'}
-    </button>
+    <form method="POST" action={`/api/auth/signout?redirect=${encodeURIComponent(redirectTo)}`}>
+      <button type="submit" className={className}>
+        {children ?? 'Sign out'}
+      </button>
+    </form>
   )
 }

@@ -2,6 +2,7 @@
 import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Eye, EyeOff } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [shakeKey, setShakeKey] = useState(0)
@@ -71,16 +73,27 @@ function LoginForm() {
       </div>
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          required
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="••••••••"
-        />
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            name="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="••••••••"
+            className="pr-10"
+          />
+          <button
+            type="button"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            onClick={() => setShowPassword(v => !v)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
       </div>
       {error && (
         <motion.p

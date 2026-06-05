@@ -74,14 +74,20 @@
 
   * {
     @apply border-border;
+    /* P2: Remove 300ms tap delay on all interactive elements */
+    touch-action: manipulation;
   }
 
   body {
     @apply bg-background text-foreground;
+    /* P5: Use dynamic viewport height — accounts for mobile browser chrome */
+    min-height: 100dvh;
   }
 
   html {
     @apply font-sans;
+    /* P5: Prevent iOS auto-zoom on focus */
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Spec: -0.3px on Display (text-2xl+), -0.2px on Heading (text-lg/xl) */

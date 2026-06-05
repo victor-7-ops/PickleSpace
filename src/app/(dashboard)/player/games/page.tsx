@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { NavTabs } from '@/components/ui/nav-tabs'
 import { createClient } from '@/lib/supabase/server'
 import { GameCard } from '@/components/player/GameCard'
 import { GamesFilter } from '@/components/player/GamesFilter'
@@ -79,23 +79,13 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
         )}
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-border mb-4">
-        {[
-          { key: 'discover', label: 'Discover' },
-          { key: 'mine',     label: 'My Games' },
-        ].map(t => (
-          <a key={t.key} href={`/player/games?tab=${t.key}`}
-            className={cn(
-              'flex-1 py-2 text-center text-sm font-medium transition-colors',
-              tab === t.key
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            )}>
-            {t.label}
-          </a>
-        ))}
-      </div>
+      <NavTabs
+        current={tab}
+        tabs={[
+          { key: 'discover', label: 'Discover',  href: '/player/games?tab=discover' },
+          { key: 'mine',     label: 'My Games',  href: '/player/games?tab=mine'     },
+        ]}
+      />
 
       {tab === 'discover' ? (
         <>

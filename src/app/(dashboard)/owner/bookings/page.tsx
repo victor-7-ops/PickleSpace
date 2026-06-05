@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { BookingCard } from '@/components/owner/BookingCard'
 import { BookingsFilter } from '@/components/owner/BookingsFilter'
-import { cn } from '@/lib/utils'
+import { NavTabs } from '@/components/ui/nav-tabs'
 import type { Booking } from '@/types'
 
 type FilterStatus = 'all' | 'confirmed' | 'pending' | 'completed' | 'cancelled'
@@ -70,23 +70,13 @@ export default async function BookingsPage({
 
   return (
     <div>
-      {/* Sub-tabs */}
-      <div className="flex border-b border-border mb-4">
-        {[
-          { key: 'today', label: 'Today' },
-          { key: 'all',   label: 'All Bookings' },
-        ].map(t => (
-          <a key={t.key} href={`/owner/bookings?tab=${t.key}`}
-            className={cn(
-              'flex-1 py-2 text-center text-sm font-medium transition-colors',
-              tab === t.key
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            )}>
-            {t.label}
-          </a>
-        ))}
-      </div>
+      <NavTabs
+        current={tab}
+        tabs={[
+          { key: 'today', label: 'Today',        href: '/owner/bookings?tab=today' },
+          { key: 'all',   label: 'All Bookings', href: '/owner/bookings?tab=all'   },
+        ]}
+      />
 
       {tab === 'all' && <BookingsFilter current={status} />}
 

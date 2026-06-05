@@ -17,13 +17,13 @@ export async function QRDisplay({ token, courtName, date, startTime, endTime }: 
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+      <div className="bg-background p-4 rounded-2xl shadow-sm border border-border">
         <img src={dataUrl} alt="Check-in QR code" className="w-48 h-48" />
       </div>
-      <p className="text-sm text-gray-500 text-center">Show this at the court for check-in</p>
+      <p className="text-sm text-muted-foreground text-center">Show this at the court for check-in</p>
       <div className="text-center">
-        <p className="text-sm font-medium text-gray-900">{courtName}</p>
-        <p className="text-xs text-gray-500">{date} · {startTime} – {endTime}</p>
+        <p className="text-sm font-medium text-foreground">{courtName}</p>
+        <p className="text-xs text-muted-foreground">{date} · {startTime} – {endTime}</p>
       </div>
     </div>
   )

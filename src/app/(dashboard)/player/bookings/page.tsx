@@ -3,8 +3,8 @@ import { PlayerBookingCard } from '@/components/player/PlayerBookingCard'
 import Link from 'next/link'
 import QRCode from 'qrcode'
 import type { Booking } from '@/types'
-import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
+import { NavTabs } from '@/components/ui/nav-tabs'
 
 interface Props {
   searchParams: { tab?: string }
@@ -51,25 +51,15 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-gray-900 mb-4">My Bookings</h1>
+      <h1 className="text-xl font-bold text-foreground mb-4">My Bookings</h1>
 
-      {/* Tabs */}
-      <div className="flex border-b border-border mb-4">
-        {[
-          { key: 'upcoming', label: 'Upcoming' },
-          { key: 'past',     label: 'Past'     },
-        ].map(t => (
-          <a key={t.key} href={`/player/bookings?tab=${t.key}`}
-            className={cn(
-              'flex-1 py-2 text-center text-sm font-medium transition-colors',
-              tab === t.key
-                ? 'text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:text-foreground'
-            )}>
-            {t.label}
-          </a>
-        ))}
-      </div>
+      <NavTabs
+        current={tab}
+        tabs={[
+          { key: 'upcoming', label: 'Upcoming', href: '/player/bookings?tab=upcoming' },
+          { key: 'past',     label: 'Past',     href: '/player/bookings?tab=past'     },
+        ]}
+      />
 
       {withQr.length === 0 ? (
         <div className="text-center py-16">

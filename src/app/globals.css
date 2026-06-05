@@ -83,6 +83,14 @@
   html {
     @apply font-sans;
   }
+
+  /* Spec: -0.3px on Display (text-2xl+), -0.2px on Heading (text-lg/xl) */
+  h1, .text-display {
+    letter-spacing: -0.3px;
+  }
+  h2, h3, .text-heading {
+    letter-spacing: -0.2px;
+  }
 }
 
 @layer utilities {

@@ -51,7 +51,14 @@ export function CourtList({ courts, date }: CourtListProps) {
               <div className="flex">
                 {court.images[0] ? (
                   <div className="w-24 h-24 flex-shrink-0 overflow-hidden">
-                    <img src={court.images[0]} alt={court.name} className="w-full h-full object-cover" />
+                    <img
+                      src={court.images[0]}
+                      alt={court.name}
+                      width={96}
+                      height={96}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 ) : (
                   <div className="w-24 h-24 flex-shrink-0 bg-secondary flex items-center justify-center text-3xl">

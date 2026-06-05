@@ -10,7 +10,7 @@ export default function HomePage() {
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-lg leading-none flex-shrink-0">
             🏓
           </div>
-          <span className="font-extrabold text-foreground text-lg tracking-tight">PickleSpace</span>
+          <span className="font-extrabold text-foreground text-lg tracking-tight" translate="no">PickleSpace</span>
         </div>
         <Link href="/login" className="text-sm font-semibold text-primary hover:underline">
           Log in

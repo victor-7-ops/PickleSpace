@@ -59,10 +59,14 @@ function LoginForm() {
         <Input
           id="email"
           type="email"
+          name="email"
+          autoComplete="email"
+          spellCheck={false}
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="you@example.com"
+          aria-describedby={error ? 'login-error' : undefined}
         />
       </div>
       <div className="flex flex-col gap-1.5">
@@ -70,6 +74,8 @@ function LoginForm() {
         <Input
           id="password"
           type="password"
+          name="password"
+          autoComplete="current-password"
           required
           value={password}
           onChange={e => setPassword(e.target.value)}
@@ -78,6 +84,8 @@ function LoginForm() {
       </div>
       {error && (
         <motion.p
+          id="login-error"
+          role="alert"
           initial={{ opacity: 0, y: -4 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-sm text-destructive"
@@ -102,7 +110,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-muted flex items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-primary">PickleSpace 🏓</CardTitle>
+          <CardTitle className="text-2xl text-primary"><span translate="no">PickleSpace</span> 🏓</CardTitle>
           <CardDescription>Log in to your account</CardDescription>
         </CardHeader>
         <CardContent>

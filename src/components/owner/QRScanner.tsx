@@ -54,7 +54,7 @@ export function QRScanner({ onResult, onClose }: QRScannerProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="relative bg-black rounded-xl overflow-hidden aspect-square max-w-xs mx-auto w-full">
-        <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+        <video ref={videoRef} autoPlay playsInline muted aria-label="Camera viewfinder for QR code scanning" className="w-full h-full object-cover" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-48 h-48 border-2 border-white rounded-xl opacity-60" />
         </div>
@@ -64,14 +64,26 @@ export function QRScanner({ onResult, onClose }: QRScannerProps) {
 
       <p className="text-xs text-muted-foreground text-center">Or enter the QR code manually:</p>
       <div className="flex gap-2">
-        <Input value={manualCode} onChange={e => setManualCode(e.target.value)}
-          placeholder="Paste booking QR code" className="flex-1" />
+        <Input
+          value={manualCode}
+          onChange={e => setManualCode(e.target.value)}
+          placeholder="Paste booking QR code"
+          name="qr-code"
+          autoComplete="off"
+          spellCheck={false}
+          aria-label="Booking QR code"
+          className="flex-1"
+        />
         <Button onClick={() => manualCode && onResult(manualCode)} disabled={!manualCode}>
           Verify
         </Button>
       </div>
 
-      <button onClick={onClose} className="text-sm text-muted-foreground text-center hover:text-foreground">
+      <button
+        type="button"
+        onClick={onClose}
+        className="text-sm text-muted-foreground text-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+      >
         Cancel
       </button>
     </div>

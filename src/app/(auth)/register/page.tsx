@@ -45,7 +45,7 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-muted flex items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-primary">PickleSpace 🏓</CardTitle>
+          <CardTitle className="text-2xl text-primary"><span translate="no">PickleSpace</span> 🏓</CardTitle>
           <CardDescription>Create your account</CardDescription>
         </CardHeader>
         <CardContent>
@@ -55,6 +55,8 @@ export default function RegisterPage() {
               <Input
                 id="name"
                 type="text"
+                name="name"
+                autoComplete="name"
                 required
                 value={name}
                 onChange={e => setName(e.target.value)}
@@ -66,10 +68,14 @@ export default function RegisterPage() {
               <Input
                 id="email"
                 type="email"
+                name="email"
+                autoComplete="email"
+                spellCheck={false}
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@example.com"
+                aria-describedby={error ? 'register-error' : undefined}
               />
             </div>
             <div className="flex flex-col gap-1.5">
@@ -77,6 +83,8 @@ export default function RegisterPage() {
               <Input
                 id="password"
                 type="password"
+                name="password"
+                autoComplete="new-password"
                 required
                 minLength={6}
                 value={password}
@@ -85,15 +93,16 @@ export default function RegisterPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label>I am a…</Label>
-              <div className="flex gap-2">
+              <Label id="role-label">I am a…</Label>
+              <div className="flex gap-2" role="group" aria-labelledby="role-label">
                 {(['player', 'owner'] as const).map(r => (
                   <button
                     key={r}
                     type="button"
+                    aria-pressed={role === r}
                     onClick={() => setRole(r)}
                     className={cn(
-                      'flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors',
+                      'flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       role === r
                         ? 'bg-primary text-primary-foreground border-primary'
                         : 'border-border text-muted-foreground hover:border-primary/50'
@@ -104,7 +113,7 @@ export default function RegisterPage() {
                 ))}
               </div>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p id="register-error" role="alert" className="text-sm text-destructive">{error}</p>}
             <Button type="submit" disabled={loading} className="w-full gap-2">
               {loading && (
                 <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />

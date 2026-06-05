@@ -80,11 +80,11 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
             </SignOutButton>
           </div>
           <div className="flex gap-4 mt-1 text-sm text-green-100">
-            <span>📅 {stats.bookingsToday} booking{stats.bookingsToday !== 1 ? 's' : ''} today</span>
-            <span>💰 ₱{stats.revenueThisWeek.toLocaleString()} this week</span>
+            <span>📅 <span className="tabular-nums">{stats.bookingsToday}</span> booking{stats.bookingsToday !== 1 ? 's' : ''} today</span>
+            <span>💰 <span className="tabular-nums">₱{stats.revenueThisWeek.toLocaleString()}</span> this week</span>
           </div>
         </div>
-        <nav className="flex border-t border-green-500 mt-2">
+        <nav aria-label="Owner navigation" className="flex border-t border-green-500 mt-2">
           {[
             { href: '/owner/courts',   label: 'Courts'   },
             { href: '/owner/schedule', label: 'Schedule' },
@@ -94,7 +94,8 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
             <Link
               key={tab.href}
               href={tab.href}
-              className="flex-1 py-2 text-center text-sm font-medium text-green-100 hover:text-white hover:bg-green-700 transition-colors"
+              aria-current={undefined}
+              className="flex-1 py-2 text-center text-sm font-medium text-green-100 hover:text-white hover:bg-green-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
             >
               {tab.label}
             </Link>

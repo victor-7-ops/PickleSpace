@@ -24,6 +24,15 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     Object.entries(body).filter(([k]) => allowed.includes(k))
   )
 
+  // Validate hourly_rate if being updated
+  if ('hourly_rate' in updates) {
+    const rate = Number(updates.hourly_rate)
+    if (isNaN(rate) || rate <= 0) {
+      return NextResponse.json({ error: 'hourly_rate must be a positive number' }, { status: 400 })
+    }
+    updates.hourly_rate = rate
+  }
+
   const { data, error } = await supabase
     .from('courts')
     .update(updates)

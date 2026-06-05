@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const { data: game } = await supabase
     .from('games')
-    .select('id, host_id, current_players')
+    .select('id, host_id, current_players, status')
     .eq('id', params.id)
     .single()
 
@@ -18,7 +18,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     return NextResponse.json({ error: 'Host cannot leave — cancel the game instead' }, { status: 400 })
   }
 
-  // Verify player is actually in the game before deleting
+  // BUG-007 FIX: Don't allow leaving (and reopening) a cancelled/completed game
+  if (game.status === 'cancelled' || game.status === 'completed') {
+    return NextResponse.json({ error: `Cannot leave a ${game.status} game` }, { status: 409 })
+  }
+
   const { data: membership } = await supabase
     .from('game_players')
     .select('id')
@@ -38,7 +42,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   if (deleteError) return NextResponse.json({ error: deleteError.message }, { status: 500 })
 
-  const newCount = Math.max(0, game.current_players - 1)
+  const newCount = Math.max(1, game.current_players - 1) // min 1 (host stays)
   await supabase
     .from('games')
     .update({ current_players: newCount, status: 'open' })

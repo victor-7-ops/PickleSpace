@@ -46,6 +46,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No slots generated — check your time range and selected days' }, { status: 400 })
   }
 
+  // Safety cap — prevent abuse / accidental huge generations
+  if (slots.length > 500) {
+    return NextResponse.json({ error: 'Too many slots (max 500 per generation)' }, { status: 400 })
+  }
+
   // ON CONFLICT DO NOTHING — idempotent (existing slots not overwritten)
   const { error } = await supabase
     .from('slots')

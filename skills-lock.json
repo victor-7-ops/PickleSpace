@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "qa-expert": {
+      "source": "daymade/claude-code-skills",
+      "sourceType": "github",
+      "skillPath": "qa-expert/SKILL.md",
+      "computedHash": "ec7deb014307c728bae0159f810ade14b06c4f3b77b8cd80f1c3d19643ce1b54"
+    }
+  }
+}

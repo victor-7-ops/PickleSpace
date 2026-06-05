@@ -52,8 +52,8 @@ export default async function SchedulePage() {
 
   return (
     <>
-      <h1 className="text-lg font-semibold text-gray-900 mb-1">{court.name}</h1>
-      <p className="text-sm text-gray-500 mb-4">Tap an empty cell to add a slot · tap a slot to view or delete</p>
+      <h1 className="text-lg font-semibold text-foreground mb-1">{court.name}</h1>
+      <p className="text-sm text-muted-foreground mb-4">Tap an empty cell to add a slot · tap a slot to view or delete</p>
       <WeeklyGrid
         court={court}
         initialSlots={slots ?? []}

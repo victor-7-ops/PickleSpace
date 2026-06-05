@@ -45,8 +45,9 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
   const [newCell, setNewCell] = useState<{ date: string; hour: number } | null>(null)
   const [generateOpen, setGenerateOpen] = useState(false)
 
+  // Slot status colors kept as raw per design spec
   function cellColor(status: Slot['status'] | undefined) {
-    if (!status) return 'bg-gray-50 border-gray-100 hover:bg-green-50 cursor-pointer'
+    if (!status) return 'bg-muted border-border hover:bg-green-50 cursor-pointer'
     if (status === 'available') return 'bg-green-100 border-green-200 hover:bg-green-200 cursor-pointer'
     if (status === 'held')      return 'bg-yellow-100 border-yellow-200 cursor-pointer'
     if (status === 'booked')    return 'bg-blue-100 border-blue-200 cursor-pointer'
@@ -62,20 +63,20 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
     <>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <button onClick={prevWeek} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">◀</button>
-          <span className="text-sm font-medium text-gray-700">
+          <button onClick={prevWeek} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground">◀</button>
+          <span className="text-sm font-medium text-foreground">
             {weekDates[0].toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })} –{' '}
             {weekDates[6].toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}
           </span>
-          <button onClick={nextWeek} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500">▶</button>
+          <button onClick={nextWeek} className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground">▶</button>
         </div>
         <button onClick={() => setGenerateOpen(true)}
-          className="text-xs font-semibold text-green-700 border border-green-300 px-3 py-1.5 rounded-lg hover:bg-green-50">
+          className="text-xs font-semibold text-primary border border-primary/30 px-3 py-1.5 rounded-lg hover:bg-primary/5">
           ⚡ Generate week
         </button>
       </div>
 
-      <div className="flex gap-3 mb-3 text-xs text-gray-500">
+      <div className="flex gap-3 mb-3 text-xs text-muted-foreground">
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 border border-green-200 inline-block" />Available</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100 border border-yellow-200 inline-block" />Held</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-100 border border-blue-200 inline-block" />Booked</span>
@@ -88,9 +89,9 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
             {weekDates.map((d, i) => {
               const ds = d.toISOString().split('T')[0]
               return (
-                <div key={i} className={`text-center text-xs font-medium py-1 ${ds === today ? 'text-green-700' : 'text-gray-500'}`}>
+                <div key={i} className={`text-center text-xs font-medium py-1 ${ds === today ? 'text-primary' : 'text-muted-foreground'}`}>
                   <div>{DAY_SHORT[d.getDay()]}</div>
-                  <div className={ds === today ? 'font-bold text-green-700' : ''}>{d.getDate()}</div>
+                  <div className={ds === today ? 'font-bold text-primary' : ''}>{d.getDate()}</div>
                 </div>
               )
             })}
@@ -99,7 +100,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
           <div className="flex flex-col gap-px">
             {HOURS.map(hour => (
               <div key={hour} className="grid grid-cols-8 gap-px">
-                <div className="text-xs text-gray-400 pr-1 pt-1 text-right">
+                <div className="text-xs text-muted-foreground pr-1 pt-1 text-right">
                   {hour === 12 ? '12pm' : hour < 12 ? `${hour}am` : `${hour - 12}pm`}
                 </div>
                 {weekDates.map((d, di) => {

@@ -2,6 +2,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 import type { Court } from '@/types'
 
 const AMENITY_OPTIONS = ['Parking', 'Shower', 'Night Lights', 'Restroom', 'Water Station']
@@ -74,7 +78,6 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
     try {
       const method = court ? 'PATCH' : 'POST'
       const url = court ? `/api/courts/${court.id}` : '/api/courts'
-
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
@@ -87,7 +90,6 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error)
-
       const courtId = json.court.id
       if (form.images.length > 0) {
         const imageUrls = await uploadImages(courtId)
@@ -97,7 +99,6 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
           body: JSON.stringify({ images: imageUrls }),
         })
       }
-
       router.refresh()
       onClose()
       setStep(0)
@@ -114,27 +115,25 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
       title: 'Basic Info',
       content: (
         <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Court name *</span>
-            <input className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Cebu Pickle Arena" />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Address *</span>
-            <input className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              value={form.address} onChange={e => set('address', e.target.value)} placeholder="Street address" />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">City</span>
-            <input className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              value={form.city} onChange={e => set('city', e.target.value)} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Description</span>
-            <textarea className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
+          <div className="flex flex-col gap-1.5">
+            <Label>Court name *</Label>
+            <Input value={form.name} onChange={e => set('name', e.target.value)} placeholder="e.g. Cebu Pickle Arena" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>Address *</Label>
+            <Input value={form.address} onChange={e => set('address', e.target.value)} placeholder="Street address" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>City</Label>
+            <Input value={form.city} onChange={e => set('city', e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>Description</Label>
+            <textarea
+              className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
               rows={3} value={form.description} onChange={e => set('description', e.target.value)}
               placeholder="Describe your court..." />
-          </label>
+          </div>
         </div>
       ),
       valid: form.name.trim() !== '' && form.address.trim() !== '',
@@ -143,15 +142,15 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
       title: 'Pricing',
       content: (
         <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Hourly rate (₱) *</span>
+          <div className="flex flex-col gap-1.5">
+            <Label>Hourly rate (₱) *</Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₱</span>
-              <input type="number" min="0" className="border border-gray-300 rounded-lg pl-7 pr-3 py-2 text-sm w-full focus:outline-none focus:ring-2 focus:ring-green-500"
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₱</span>
+              <Input type="number" min="0" className="pl-7"
                 value={form.hourly_rate} onChange={e => set('hourly_rate', e.target.value)} placeholder="500" />
             </div>
-          </label>
-          <p className="text-xs text-gray-400">PickleSpace charges a 10% platform fee per booking. Players pay the full rate; you receive 90%.</p>
+          </div>
+          <p className="text-xs text-muted-foreground">PickleSpace charges a 10% platform fee per booking. Players pay the full rate; you receive 90%.</p>
         </div>
       ),
       valid: Number(form.hourly_rate) > 0,
@@ -160,17 +159,18 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
       title: 'Amenities',
       content: (
         <div className="flex flex-col gap-3">
-          <p className="text-sm text-gray-500">Select all that apply:</p>
+          <p className="text-sm text-muted-foreground">Select all that apply:</p>
           <div className="flex flex-wrap gap-2">
             {AMENITY_OPTIONS.map(a => (
-              <button key={a} type="button"
-                onClick={() => toggleAmenity(a)}
-                className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+              <button key={a} type="button" onClick={() => toggleAmenity(a)}
+                className={cn(
+                  'px-3 py-1.5 rounded-full text-sm border transition-colors',
                   form.amenities.includes(a)
-                    ? 'bg-green-600 text-white border-green-600'
-                    : 'border-gray-300 text-gray-700 hover:border-green-400'
-                }`}
-              >{a}</button>
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-input text-foreground hover:border-primary/50'
+                )}>
+                {a}
+              </button>
             ))}
           </div>
         </div>
@@ -181,15 +181,15 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
       title: 'Photos',
       content: (
         <div className="flex flex-col gap-3">
-          <p className="text-sm text-gray-500">Upload up to 6 photos of your court.</p>
+          <p className="text-sm text-muted-foreground">Upload up to 6 photos of your court.</p>
           <input type="file" accept="image/*" multiple
             onChange={e => {
               const files = Array.from(e.target.files ?? []).slice(0, 6)
               set('images', files)
             }}
-            className="text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-green-50 file:text-green-700 file:text-sm" />
+            className="text-sm text-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-secondary file:text-secondary-foreground file:text-sm" />
           {form.images.length > 0 && (
-            <p className="text-xs text-gray-400">{form.images.length} file{form.images.length > 1 ? 's' : ''} selected</p>
+            <p className="text-xs text-muted-foreground">{form.images.length} file{form.images.length > 1 ? 's' : ''} selected</p>
           )}
           {court && court.images.length > 0 && (
             <div className="flex gap-2 flex-wrap mt-1">
@@ -211,33 +211,32 @@ export function CourtSheet({ open, onClose, court }: CourtSheetProps) {
     <Sheet open={open} onClose={onClose} title={court ? 'Edit Court' : 'Add Court'}>
       <div className="flex gap-1 mb-6">
         {STEPS.map((_, i) => (
-          <div key={i} className={`flex-1 h-1 rounded-full ${i <= step ? 'bg-green-600' : 'bg-gray-200'}`} />
+          <div key={i} className={cn('flex-1 h-1 rounded-full', i <= step ? 'bg-primary' : 'bg-muted')} />
         ))}
       </div>
 
-      <h3 className="font-medium text-gray-900 mb-4">{currentStep.title}</h3>
+      <h3 className="font-medium text-foreground mb-4">{currentStep.title}</h3>
       {currentStep.content}
 
-      {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-3 text-sm text-destructive">{error}</p>}
 
       <div className="flex gap-3 mt-6">
         {step > 0 && (
-          <button onClick={() => setStep(s => s - 1)}
-            className="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <Button variant="outline" className="flex-1" onClick={() => setStep(s => s - 1)}>
             Back
-          </button>
+          </Button>
         )}
-        <button
+        <Button
+          className="flex-1"
           disabled={!currentStep.valid || saving}
           onClick={isLast ? handleSubmit : () => setStep(s => s + 1)}
-          className="flex-1 py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold disabled:opacity-40 hover:bg-green-700 transition-colors"
         >
           {saving ? 'Saving...' : isLast ? (court ? 'Save Changes' : 'List Court') : 'Next →'}
-        </button>
+        </Button>
       </div>
 
       {!court && isLast && (
-        <p className="mt-3 text-xs text-center text-gray-400">Your court will be reviewed and activated within 24 hours.</p>
+        <p className="mt-3 text-xs text-center text-muted-foreground">Your court will be reviewed and activated within 24 hours.</p>
       )}
     </Sheet>
   )

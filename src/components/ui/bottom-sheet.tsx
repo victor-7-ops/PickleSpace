@@ -19,17 +19,11 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
 
   return (
     <>
-      <div
-        className="fixed inset-0 bg-black/40 z-50 transition-opacity"
-        onClick={onClose}
-      />
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-xl max-h-[90vh] flex flex-col animate-slide-up">
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h2 className="font-semibold text-gray-900">{title}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
-          >
+      <div className="fixed inset-0 bg-black/40 z-50 transition-opacity" onClick={onClose} />
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl shadow-xl max-h-[90vh] flex flex-col animate-slide-up">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <h2 className="font-semibold text-foreground">{title}</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-2xl leading-none">
             ×
           </button>
         </div>

@@ -1,5 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface QRScannerProps {
   onResult: (code: string) => void
@@ -32,10 +34,7 @@ export function QRScanner({ onResult, onClose }: QRScannerProps) {
           if (!videoRef.current) return
           try {
             const codes = await detector.detect(videoRef.current)
-            if (codes.length > 0) {
-              onResult(codes[0].rawValue)
-              return
-            }
+            if (codes.length > 0) { onResult(codes[0].rawValue); return }
           } catch {}
           animFrame = requestAnimationFrame(scan)
         }
@@ -63,19 +62,16 @@ export function QRScanner({ onResult, onClose }: QRScannerProps) {
 
       {error && <p className="text-sm text-yellow-600 text-center">{error}</p>}
 
-      <p className="text-xs text-gray-400 text-center">Or enter the QR code manually:</p>
+      <p className="text-xs text-muted-foreground text-center">Or enter the QR code manually:</p>
       <div className="flex gap-2">
-        <input value={manualCode} onChange={e => setManualCode(e.target.value)}
-          placeholder="Paste booking QR code"
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-        <button onClick={() => manualCode && onResult(manualCode)}
-          disabled={!manualCode}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold disabled:opacity-40">
+        <Input value={manualCode} onChange={e => setManualCode(e.target.value)}
+          placeholder="Paste booking QR code" className="flex-1" />
+        <Button onClick={() => manualCode && onResult(manualCode)} disabled={!manualCode}>
           Verify
-        </button>
+        </Button>
       </div>
 
-      <button onClick={onClose} className="text-sm text-gray-400 text-center hover:text-gray-600">
+      <button onClick={onClose} className="text-sm text-muted-foreground text-center hover:text-foreground">
         Cancel
       </button>
     </div>

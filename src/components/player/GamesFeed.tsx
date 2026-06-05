@@ -73,9 +73,9 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
 
   if (sortedDates.length === 0) {
     return (
-      <div className="text-center py-16 text-gray-400">
+      <div className="text-center py-16 text-muted-foreground">
         <p className="text-4xl mb-3">🏓</p>
-        <p className="font-medium text-gray-600 mb-1">No open games</p>
+        <p className="font-medium text-foreground mb-1">No open games</p>
         <p className="text-sm">Be the first to post one!</p>
       </div>
     )
@@ -85,7 +85,7 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
     <div className="flex flex-col gap-6">
       {sortedDates.map(date => (
         <div key={date}>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-3">
             {dateLabel(date)}
           </p>
           <div className="flex flex-col gap-3">

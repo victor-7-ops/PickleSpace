@@ -2,6 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import type { Slot, Booking } from '@/types'
 
 interface SlotSheetProps {
@@ -63,6 +65,7 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
     <Sheet open={open} onClose={onClose} title={title}>
       {isReadOnly && booking ? (
         <div className="flex flex-col gap-3">
+          {/* Slot status colors kept as raw per design spec */}
           <div className="bg-blue-50 rounded-xl p-4">
             <p className="font-semibold text-blue-900">{(booking.player as { name?: string } | undefined)?.name ?? 'Player'}</p>
             <p className="text-sm text-blue-700 mt-1">{slot?.start_time} – {slot?.end_time}</p>
@@ -81,41 +84,39 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
             <p className="font-semibold text-green-900">{slot!.start_time} – {slot!.end_time}</p>
             <p className="text-sm text-green-700 mt-1">₱{defaultRate.toLocaleString()}/hr</p>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button onClick={handleDelete} disabled={saving}
-            className="w-full py-2.5 bg-red-50 text-red-600 border border-red-200 rounded-xl text-sm font-semibold hover:bg-red-100 disabled:opacity-40">
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <Button variant="destructive" onClick={handleDelete} disabled={saving} className="w-full">
             {saving ? 'Deleting…' : 'Delete Slot'}
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-gray-500">{date}</p>
+          <p className="text-sm text-muted-foreground">{date}</p>
           <div className="flex gap-3">
-            <label className="flex-1 flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-700">Start</span>
+            <div className="flex-1 flex flex-col gap-1.5">
+              <Label>Start</Label>
               <select value={startHour} onChange={e => setStartHour(Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring">
                 {Array.from({ length: 16 }, (_, i) => i + 6).map(h => (
                   <option key={h} value={h}>{String(h).padStart(2, '0')}:00</option>
                 ))}
               </select>
-            </label>
-            <label className="flex-1 flex flex-col gap-1">
-              <span className="text-sm font-medium text-gray-700">End</span>
+            </div>
+            <div className="flex-1 flex flex-col gap-1.5">
+              <Label>End</Label>
               <select value={endHour} onChange={e => setEndHour(Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring">
                 {Array.from({ length: 16 }, (_, i) => i + 7).map(h => (
                   <option key={h} value={h} disabled={h <= startHour}>{String(h).padStart(2, '0')}:00</option>
                 ))}
               </select>
-            </label>
+            </div>
           </div>
-          <p className="text-xs text-gray-400">Rate: ₱{defaultRate.toLocaleString()}/hr (from court default)</p>
-          {error && <p className="text-sm text-red-600">{error}</p>}
-          <button onClick={handleCreate} disabled={saving || endHour <= startHour}
-            className="w-full py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold disabled:opacity-40 hover:bg-green-700">
+          <p className="text-xs text-muted-foreground">Rate: ₱{defaultRate.toLocaleString()}/hr (from court default)</p>
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          <Button onClick={handleCreate} disabled={saving || endHour <= startHour} className="w-full">
             {saving ? 'Creating…' : 'Create Slot'}
-          </button>
+          </Button>
         </div>
       )}
     </Sheet>

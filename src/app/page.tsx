@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Minimal header */}
       <header className="px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -28,7 +28,7 @@ export default function HomePage() {
         </div>
 
         {/* Product preview — mock discovery UI showing the actual product */}
-        <div className="rounded-2xl border border-border bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
           <div className="px-4 pt-4 pb-3 border-b border-border">
             <p className="text-xs font-semibold text-muted-foreground mb-2">When do you want to play?</p>
             <div className="flex gap-2">

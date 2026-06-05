@@ -68,7 +68,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
 
   if (slots.length === 0) {
     return (
-      <p className="text-sm text-gray-400 text-center py-8">
+      <p className="text-sm text-muted-foreground text-center py-8">
         No slots available on this date
       </p>
     )
@@ -77,7 +77,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
   return (
     <div>
       {error && (
-        <p className="text-sm text-red-600 mb-3 text-center">{error}</p>
+        <p className="text-sm text-destructive mb-3 text-center">{error}</p>
       )}
       <div className="flex flex-col gap-2">
         {available.map(slot => (
@@ -88,9 +88,9 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-green-700">₱{hourlyRate.toLocaleString()}</span>
+              <span className="text-sm font-bold text-primary">₱{hourlyRate.toLocaleString()}</span>
               {holding === slot.id
-                ? <span className="text-xs text-gray-400">Holding…</span>
+                ? <span className="text-xs text-muted-foreground">Holding…</span>
                 : <span className="text-xs text-green-600 font-medium">Book →</span>
               }
             </div>
@@ -98,11 +98,11 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
         ))}
         {unavailable.map(slot => (
           <div key={slot.id}
-            className="w-full min-h-[44px] flex items-center justify-between bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 opacity-50">
-            <span className="text-sm text-gray-500">
+            className="w-full min-h-[44px] flex items-center justify-between bg-muted border border-border rounded-xl px-4 py-3 opacity-50">
+            <span className="text-sm text-muted-foreground">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>
-            <span className="text-xs text-gray-400">Unavailable</span>
+            <span className="text-xs text-muted-foreground">Unavailable</span>
           </div>
         ))}
       </div>

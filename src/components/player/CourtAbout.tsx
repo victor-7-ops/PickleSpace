@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { Separator } from '@/components/ui/separator'
 
 interface CourtAboutProps {
   description?: string
@@ -12,11 +13,12 @@ export function CourtAbout({ description, amenities, address, images }: CourtAbo
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border-t border-gray-100 mt-4">
+    <div className="mt-4">
+      <Separator />
       <button onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between py-4 text-sm font-semibold text-gray-700">
+        className="w-full flex items-center justify-between py-4 text-sm font-semibold text-foreground">
         About this court
-        <span className="text-gray-400">{open ? '▲' : '▾'}</span>
+        <span className="text-muted-foreground">{open ? '▲' : '▾'}</span>
       </button>
       {open && (
         <div className="pb-4 flex flex-col gap-3">
@@ -27,15 +29,15 @@ export function CourtAbout({ description, amenities, address, images }: CourtAbo
               ))}
             </div>
           )}
-          {description && <p className="text-sm text-gray-600">{description}</p>}
+          {description && <p className="text-sm text-muted-foreground">{description}</p>}
           {amenities.length > 0 && (
             <div className="flex gap-1.5 flex-wrap">
               {amenities.map(a => (
-                <span key={a} className="text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-full">{a}</span>
+                <span key={a} className="text-xs text-muted-foreground bg-muted px-3 py-1 rounded-full">{a}</span>
               ))}
             </div>
           )}
-          <p className="text-sm text-gray-500">📍 {address}</p>
+          <p className="text-sm text-muted-foreground">📍 {address}</p>
         </div>
       )}
     </div>

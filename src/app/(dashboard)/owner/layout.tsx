@@ -70,7 +70,7 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen bg-muted flex flex-col">
-      <header className="sticky top-0 z-40 bg-green-600 text-white shadow-md">
+      <header className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-md">
         <div className="px-4 pt-4 pb-2">
           <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>
           <div className="flex gap-4 mt-1 text-sm text-green-100">

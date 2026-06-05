@@ -2,6 +2,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sheet } from '@/components/ui/bottom-sheet'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -54,50 +57,59 @@ export function GenerateWeekSheet({ open, onClose, courtId, weekStart }: Generat
     <Sheet open={open} onClose={onClose} title="Generate Week">
       <div className="flex flex-col gap-4">
         <div className="flex gap-3">
-          <label className="flex-1 flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Open from</span>
+          <div className="flex-1 flex flex-col gap-1.5">
+            <Label>Open from</Label>
             <input type="time" value={openFrom} onChange={e => setOpenFrom(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-          </label>
-          <label className="flex-1 flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700">Until</span>
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+          </div>
+          <div className="flex-1 flex flex-col gap-1.5">
+            <Label>Until</Label>
             <input type="time" value={openUntil} onChange={e => setOpenUntil(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 text-sm" />
-          </label>
+              className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+          </div>
         </div>
+
         <div>
-          <span className="text-sm font-medium text-gray-700">Slot duration</span>
-          <div className="flex gap-2 mt-1">
+          <Label className="mb-2 block">Slot duration</Label>
+          <div className="flex gap-2">
             {[1, 2].map(d => (
               <button key={d} onClick={() => setDuration(d)}
-                className={`px-4 py-1.5 rounded-lg text-sm border transition-colors ${
-                  duration === d ? 'bg-green-600 text-white border-green-600' : 'border-gray-300 text-gray-700'
-                }`}>
+                className={cn(
+                  'px-4 py-1.5 rounded-lg text-sm border transition-colors',
+                  duration === d
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-input text-foreground hover:border-primary/50'
+                )}>
                 {d} hr
               </button>
             ))}
           </div>
         </div>
+
         <div>
-          <span className="text-sm font-medium text-gray-700">Days</span>
-          <div className="flex gap-1.5 mt-1 flex-wrap">
+          <Label className="mb-2 block">Days</Label>
+          <div className="flex gap-1.5 flex-wrap">
             {DAY_LABELS.map((label, i) => (
               <button key={i} onClick={() => toggleDay(i)}
-                className={`px-2.5 py-1 rounded-lg text-sm border transition-colors ${
-                  days.includes(i) ? 'bg-green-600 text-white border-green-600' : 'border-gray-300 text-gray-600'
-                }`}>
+                className={cn(
+                  'px-2.5 py-1 rounded-lg text-sm border transition-colors',
+                  days.includes(i)
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-input text-foreground hover:border-primary/50'
+                )}>
                 {label}
               </button>
             ))}
           </div>
         </div>
-        <p className="text-xs text-gray-400">Will generate ~{slotCount} slots. Existing slots won&apos;t be overwritten.</p>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {result && <p className="text-sm text-green-700 font-medium">✓ {result}</p>}
-        <button onClick={handleGenerate} disabled={saving || days.length === 0}
-          className="w-full py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold disabled:opacity-40 hover:bg-green-700">
+
+        <p className="text-xs text-muted-foreground">Will generate ~{slotCount} slots. Existing slots won&apos;t be overwritten.</p>
+        {error && <p className="text-sm text-destructive">{error}</p>}
+        {result && <p className="text-sm text-primary font-medium">✓ {result}</p>}
+
+        <Button onClick={handleGenerate} disabled={saving || days.length === 0} className="w-full">
           {saving ? 'Generating…' : `Generate ${slotCount} slots`}
-        </button>
+        </Button>
       </div>
     </Sheet>
   )

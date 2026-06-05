@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface DailyRevenue { date: string; amount: number }
 
@@ -27,13 +28,14 @@ export function EarningsChart({ data, view: initialView }: EarningsChartProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-medium text-gray-700">Revenue</p>
+        <p className="text-sm font-medium text-foreground">Revenue</p>
         <div className="flex gap-1">
           {(['week', 'month'] as const).map(v => (
             <button key={v} onClick={() => setView(v)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium capitalize transition-colors ${
-                view === v ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600'
-              }`}>
+              className={cn(
+                'px-3 py-1 rounded-lg text-xs font-medium capitalize transition-colors',
+                view === v ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+              )}>
               {v}
             </button>
           ))}
@@ -42,8 +44,8 @@ export function EarningsChart({ data, view: initialView }: EarningsChartProps) {
 
       {tooltip && (
         <div className="text-center mb-2">
-          <span className="text-xs text-gray-500">{new Date(tooltip.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>
-          <span className="ml-2 text-sm font-semibold text-green-700">₱{tooltip.amount.toLocaleString()}</span>
+          <span className="text-xs text-muted-foreground">{new Date(tooltip.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>
+          <span className="ml-2 text-sm font-semibold text-primary">₱{tooltip.amount.toLocaleString()}</span>
         </div>
       )}
 
@@ -57,9 +59,10 @@ export function EarningsChart({ data, view: initialView }: EarningsChartProps) {
               onMouseLeave={() => setTooltip(null)}
               onClick={() => setTooltip(tooltip?.date === d.date ? null : d)}>
               <div
-                className={`w-full rounded-t transition-colors ${
-                  isToday ? 'bg-green-600' : d.amount > 0 ? 'bg-green-300' : 'bg-gray-100'
-                }`}
+                className={cn(
+                  'w-full rounded-t transition-colors',
+                  isToday ? 'bg-primary' : d.amount > 0 ? 'bg-primary/40' : 'bg-muted'
+                )}
                 style={{ height: `${Math.max(heightPct, d.amount > 0 ? 8 : 4)}%` }}
               />
             </div>
@@ -67,7 +70,7 @@ export function EarningsChart({ data, view: initialView }: EarningsChartProps) {
         })}
       </div>
 
-      <div className="flex justify-between mt-1 text-[10px] text-gray-400">
+      <div className="flex justify-between mt-1 text-[10px] text-muted-foreground">
         {filtered.length > 0 && (
           <>
             <span>{new Date(filtered[0].date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</span>

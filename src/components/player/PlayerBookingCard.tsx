@@ -58,7 +58,7 @@ export function PlayerBookingCard({ booking, qrDataUrl }: PlayerBookingCardProps
             <DrawerTitle>Check-in QR Code</DrawerTitle>
           </DrawerHeader>
           <div className="flex flex-col items-center gap-4 px-4 pb-8">
-            <div className="bg-white p-4 rounded-2xl border border-border shadow-sm">
+            <div className="bg-background p-4 rounded-2xl border border-border shadow-sm">
               <img src={qrDataUrl} alt="Check-in QR code" className="size-56" />
             </div>
             <p className="text-sm text-muted-foreground text-center">Show this to the court owner for check-in</p>

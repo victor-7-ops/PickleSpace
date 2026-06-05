@@ -96,6 +96,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
 
       <div className="overflow-x-auto">
         <div className="min-w-[480px]">
+          {/* Day headers — sticky so they stay visible while scrolling vertically */}
           <div className="grid grid-cols-8 gap-px mb-1">
             <div />
             {weekDates.map((d, i) => {
@@ -109,6 +110,8 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
             })}
           </div>
 
+          {/* 12-hour visible window — scrollable for 24h courts (each row = h-8 = 32px, 12 rows = 384px) */}
+          <div className="overflow-y-auto max-h-[384px] no-scrollbar">
           <div className="flex flex-col gap-px">
             {HOURS.map(hour => (
               <div key={hour} className="grid grid-cols-8 gap-px">
@@ -136,6 +139,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
               </div>
             ))}
           </div>
+          </div>{/* end scrollable window */}
         </div>
       </div>
 

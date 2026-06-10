@@ -107,7 +107,7 @@ function LoginForm() {
         </motion.p>
       )}
       <motion.div whileTap={reduce ? {} : { scale: 0.98 }}>
-        <Button type="submit" disabled={loading} className="w-full gap-2">
+        <Button type="submit" variant="power" size="lg" disabled={loading} className="w-full gap-2">
           {loading && (
             <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
           )}
@@ -120,11 +120,18 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
+    <div className="min-h-dvh bg-court-800 flex flex-col items-center justify-center px-4 py-10">
+      {/* Brand panel — navy court, lime ball */}
+      <div className="flex items-center gap-2.5 mb-6">
+        <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center flex-shrink-0" aria-hidden="true">
+          <span className="w-4 h-4 rounded-full bg-court-800" />
+        </div>
+        <span className="font-display text-3xl uppercase text-white tracking-wide" translate="no">PickleSpace</span>
+      </div>
+      <Card className="w-full max-w-sm court-line">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-primary"><span translate="no">PickleSpace</span> 🏓</CardTitle>
-          <CardDescription>Log in to your account</CardDescription>
+          <CardTitle className="text-2xl">Log in</CardTitle>
+          <CardDescription>Welcome back — game on</CardDescription>
         </CardHeader>
         <CardContent>
           <Suspense fallback={<Skeleton className="h-48 w-full" />}>

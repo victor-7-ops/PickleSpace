@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Swords, LandPlot } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -42,11 +42,18 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
+    <div className="min-h-dvh bg-court-800 flex flex-col items-center justify-center px-4 py-10">
+      {/* Brand panel — navy court, lime ball */}
+      <div className="flex items-center gap-2.5 mb-6">
+        <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center flex-shrink-0" aria-hidden="true">
+          <span className="w-4 h-4 rounded-full bg-court-800" />
+        </div>
+        <span className="font-display text-3xl uppercase text-white tracking-wide" translate="no">PickleSpace</span>
+      </div>
+      <Card className="w-full max-w-sm court-line">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl text-primary"><span translate="no">PickleSpace</span> 🏓</CardTitle>
-          <CardDescription>Create your account</CardDescription>
+          <CardTitle className="text-2xl">Create your account</CardTitle>
+          <CardDescription>Join the Cebu pickleball scene</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="flex flex-col gap-4">
@@ -113,19 +120,21 @@ export default function RegisterPage() {
                     aria-pressed={role === r}
                     onClick={() => setRole(r)}
                     className={cn(
-                      'flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      'flex-1 min-h-[44px] py-2 rounded-full text-sm font-semibold border transition-colors inline-flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                       role === r
                         ? 'bg-primary text-primary-foreground border-primary'
                         : 'border-border text-muted-foreground hover:border-primary/50'
                     )}
                   >
-                    {r === 'player' ? '🏓 Player' : '🏟 Court Owner'}
+                    {r === 'player'
+                      ? <><Swords size={15} aria-hidden="true" /> Player</>
+                      : <><LandPlot size={15} aria-hidden="true" /> Court Owner</>}
                   </button>
                 ))}
               </div>
             </div>
             {error && <p id="register-error" role="alert" className="text-sm text-destructive">{error}</p>}
-            <Button type="submit" disabled={loading} className="w-full gap-2">
+            <Button type="submit" variant="power" size="lg" disabled={loading} className="w-full gap-2">
               {loading && (
                 <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               )}

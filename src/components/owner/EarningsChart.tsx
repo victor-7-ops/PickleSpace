@@ -61,7 +61,7 @@ export function EarningsChart({ data, view: initialView }: EarningsChartProps) {
               <div
                 className={cn(
                   'w-full rounded-t transition-colors',
-                  isToday ? 'bg-primary' : d.amount > 0 ? 'bg-primary/40' : 'bg-muted'
+                  isToday ? 'bg-accent' : d.amount > 0 ? 'bg-primary/50' : 'bg-muted'
                 )}
                 style={{ height: `${Math.max(heightPct, d.amount > 0 ? 8 : 4)}%` }}
               />

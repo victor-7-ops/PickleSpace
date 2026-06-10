@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { CalendarDays, Wallet } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { SignOutButton } from '@/components/ui/sign-out-button'
 
@@ -71,20 +72,26 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
 
   return (
     <div className="min-h-screen bg-muted flex flex-col">
-      <header className="sticky top-0 z-40 bg-primary text-primary-foreground shadow-md">
+      <header className="sticky top-0 z-40 bg-court-700 text-white elevation-2">
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between">
-            <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]} 👋</p>
-            <SignOutButton className="text-xs text-green-200 hover:text-white transition-colors">
+            <p className="font-semibold text-base">{greeting}, {(profile.name ?? 'there').split(' ')[0]}</p>
+            <SignOutButton className="text-xs text-white/70 hover:text-white transition-colors">
               Sign out
             </SignOutButton>
           </div>
-          <div className="flex gap-4 mt-1 text-sm text-green-100">
-            <span>📅 <span className="tabular-nums">{stats.bookingsToday}</span> booking{stats.bookingsToday !== 1 ? 's' : ''} today</span>
-            <span>💰 <span className="tabular-nums">₱{stats.revenueThisWeek.toLocaleString()}</span> this week</span>
+          <div className="flex gap-4 mt-1 text-sm text-white/80">
+            <span className="inline-flex items-center gap-1.5">
+              <CalendarDays size={14} className="text-accent" aria-hidden="true" />
+              <span className="tabular-nums">{stats.bookingsToday}</span> booking{stats.bookingsToday !== 1 ? 's' : ''} today
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Wallet size={14} className="text-accent" aria-hidden="true" />
+              <span className="tabular-nums">₱{stats.revenueThisWeek.toLocaleString()}</span> this week
+            </span>
           </div>
         </div>
-        <nav aria-label="Owner navigation" className="flex border-t border-green-500 mt-2">
+        <nav aria-label="Owner navigation" className="flex border-t border-court-500 mt-2">
           {[
             { href: '/owner/courts',   label: 'Courts'   },
             { href: '/owner/schedule', label: 'Schedule' },
@@ -95,7 +102,7 @@ export default async function OwnerLayout({ children }: { children: React.ReactN
               key={tab.href}
               href={tab.href}
               aria-current={undefined}
-              className="flex-1 py-2 text-center text-sm font-medium text-green-100 hover:text-white hover:bg-green-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-inset"
+              className="flex-1 py-2 text-center text-sm font-medium text-white/70 hover:text-white hover:bg-court-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
             >
               {tab.label}
             </Link>

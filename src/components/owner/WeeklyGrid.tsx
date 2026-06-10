@@ -59,8 +59,8 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
 
   // Slot status colors kept as raw per design spec
   function cellColor(status: Slot['status'] | undefined) {
-    if (!status) return 'bg-muted border-border hover:bg-green-50 cursor-pointer'
-    if (status === 'available') return 'bg-green-100 border-green-200 hover:bg-green-200 cursor-pointer'
+    if (!status) return 'bg-muted border-border hover:bg-ball-50 cursor-pointer'
+    if (status === 'available') return 'bg-ball-100 border-ball-300 hover:bg-ball-300 cursor-pointer'
     if (status === 'held')      return 'bg-yellow-100 border-yellow-200 cursor-pointer'
     if (status === 'booked')    return 'bg-blue-100 border-blue-200 cursor-pointer'
     return ''
@@ -89,7 +89,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
       </div>
 
       <div className="flex gap-3 mb-3 text-xs text-muted-foreground">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 border border-green-200 inline-block" />Available</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-ball-100 border border-ball-300 inline-block" />Available</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100 border border-yellow-200 inline-block" />Held</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-100 border border-blue-200 inline-block" />Booked</span>
       </div>

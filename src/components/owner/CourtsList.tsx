@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { LandPlot } from 'lucide-react'
 import { CourtSheet } from './CourtSheet'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -22,7 +23,9 @@ export function CourtsList({ courts }: { courts: Court[] }) {
 
       {courts.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <p className="text-4xl mb-3">🏟</p>
+          <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-3">
+            <LandPlot size={28} className="text-primary" aria-hidden="true" />
+          </div>
           <p className="font-medium text-foreground mb-1">No courts yet</p>
           <p className="text-sm mb-4">List your first court and start accepting bookings.</p>
           <Button onClick={openAdd}>List your first court</Button>

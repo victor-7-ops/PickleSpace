@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { SignOutButton } from '@/components/ui/sign-out-button'
 import Link from 'next/link'
+import { LayoutDashboard, LandPlot } from 'lucide-react'
 
 const ADMIN_EMAIL = 'gadianavictor@gmail.com'
 
@@ -30,12 +31,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       {/* Nav tabs */}
       <nav className="bg-foreground border-t border-background/10 px-4 flex gap-1 pb-1">
         {[
-          { href: '/admin',        label: '📊 Dashboard' },
-          { href: '/admin/courts', label: '🏟 Courts'    },
+          { href: '/admin',        label: 'Dashboard', Icon: LayoutDashboard },
+          { href: '/admin/courts', label: 'Courts',    Icon: LandPlot },
         ].map(tab => (
           <Link key={tab.href} href={tab.href}
-            className="px-3 py-2 text-xs font-semibold text-background/60 hover:text-background transition-colors rounded-t-md hover:bg-background/10">
-            {tab.label}
+            className="px-3 py-2 text-xs font-semibold text-background/60 hover:text-background transition-colors rounded-t-md hover:bg-background/10 inline-flex items-center gap-1.5">
+            <tab.Icon size={13} aria-hidden="true" /> {tab.label}
           </Link>
         ))}
       </nav>

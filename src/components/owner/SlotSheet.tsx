@@ -79,10 +79,10 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
         </div>
       ) : isExisting ? (
         <div className="flex flex-col gap-4">
-          <div className="bg-green-50 rounded-xl p-4">
-            <p className="text-sm text-green-700">{date}</p>
-            <p className="font-semibold text-green-900">{slot!.start_time} – {slot!.end_time}</p>
-            <p className="text-sm text-green-700 mt-1">₱{defaultRate.toLocaleString()}/hr</p>
+          <div className="bg-ball-50 court-line rounded-lg p-4">
+            <p className="text-sm text-ball-700">{date}</p>
+            <p className="font-semibold text-court-700">{slot!.start_time} – {slot!.end_time}</p>
+            <p className="text-sm text-ball-700 mt-1 tabular-nums">₱{defaultRate.toLocaleString()}/hr</p>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           <Button variant="destructive" onClick={handleDelete} disabled={saving} className="w-full">

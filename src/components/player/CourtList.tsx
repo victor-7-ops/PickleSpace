@@ -1,6 +1,7 @@
 'use client'
 import { motion, useReducedMotion } from 'motion/react'
 import Link from 'next/link'
+import { MapPin } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { staggerContainer, staggerItem } from '@/lib/motion'
@@ -17,14 +18,14 @@ interface CourtListProps {
 
 function availabilityColor(slots: number, max: number) {
   const ratio = slots / max
-  if (ratio > 0.6) return 'bg-green-500'
+  if (ratio > 0.6) return 'bg-ball-400'
   if (ratio > 0.3) return 'bg-amber-400'
   return 'bg-orange-400'
 }
 
 function slotTextColor(slots: number, max: number) {
   const ratio = slots / max
-  if (ratio > 0.6) return 'text-green-700'
+  if (ratio > 0.6) return 'text-ball-700'
   if (ratio > 0.3) return 'text-amber-700'
   return 'text-orange-700'
 }
@@ -61,15 +62,17 @@ export function CourtList({ courts, date }: CourtListProps) {
                     />
                   </div>
                 ) : (
-                  <div className="w-24 h-24 flex-shrink-0 bg-secondary flex items-center justify-center text-3xl">
-                    🏓
+                  <div className="w-24 h-24 flex-shrink-0 bg-court-700 flex items-center justify-center" aria-hidden="true">
+                    <span className="w-6 h-6 rounded-full bg-accent" />
                   </div>
                 )}
                 <CardContent className="p-3 flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="font-semibold text-foreground text-sm leading-tight">{court.name}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">📍 {court.city}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 inline-flex items-center gap-1">
+                        <MapPin size={12} aria-hidden="true" /> {court.city}
+                      </p>
                     </div>
                     <p className="font-bold text-primary text-sm tabular-nums flex-shrink-0">
                       ₱{court.hourly_rate.toLocaleString()}

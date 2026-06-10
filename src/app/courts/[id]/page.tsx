@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { SlotGrid } from '@/components/player/SlotGrid'
 import { CourtAbout } from '@/components/player/CourtAbout'
@@ -57,13 +58,17 @@ export default async function CourtDetailPage({ params, searchParams }: Props) {
   return (
     <div className="min-h-screen bg-background">
       {/* Sticky top bar */}
-      <header className="sticky top-0 z-30 glass border-b-0 shadow-sm px-4 py-3 flex items-center gap-3">
-        <Link href={`/player/discover?date=${selectedDate}`} className="text-muted-foreground hover:text-foreground text-lg">
-          ←
+      <header className="sticky top-0 z-30 bg-card elevation-1 court-line px-4 py-3 flex items-center gap-2">
+        <Link
+          href={`/player/discover?date=${selectedDate}`}
+          aria-label="Back to discover"
+          className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <ChevronLeft size={22} aria-hidden="true" />
         </Link>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-foreground truncate">{court.name}</p>
-          <p className="text-xs text-primary font-medium">₱{court.hourly_rate.toLocaleString()}/hr</p>
+          <p className="text-xs text-primary font-bold tabular-nums">₱{court.hourly_rate.toLocaleString()}/hr</p>
         </div>
       </header>
 
@@ -82,7 +87,7 @@ export default async function CourtDetailPage({ params, searchParams }: Props) {
                 })()
             return (
               <Link key={d} href={`/courts/${params.id}?date=${d}`}
-                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                className={`flex-shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold border transition-colors ${
                   d === selectedDate
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'border-border text-muted-foreground hover:border-primary/50'

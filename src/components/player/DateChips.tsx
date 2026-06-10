@@ -1,5 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { Calendar } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface DateChipsProps {
@@ -48,7 +49,7 @@ export function DateChips({ selected }: DateChipsProps) {
           ? 'bg-primary text-primary-foreground border-primary'
           : 'bg-background border-border text-muted-foreground hover:border-primary/50'
       )}>
-        📅 Pick date
+        <Calendar size={14} className="mr-1.5" aria-hidden="true" /> Pick date
         <input type="date" className="sr-only" value={selected}
           min={todayStr}
           onChange={e => e.target.value && go(e.target.value)} />

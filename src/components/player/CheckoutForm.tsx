@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Smartphone, CreditCard, Banknote, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -57,10 +58,10 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
     }
   }
 
-  const METHODS: { id: PaymentMethod; label: string; icon: string }[] = [
-    { id: 'gcash', label: 'GCash', icon: '📱' },
-    { id: 'card',  label: 'Card',  icon: '💳' },
-    { id: 'cash',  label: 'Cash',  icon: '💵' },
+  const METHODS: { id: PaymentMethod; label: string; Icon: LucideIcon }[] = [
+    { id: 'gcash', label: 'GCash', Icon: Smartphone },
+    { id: 'card',  label: 'Card',  Icon: CreditCard },
+    { id: 'cash',  label: 'Cash',  Icon: Banknote },
   ]
 
   return (
@@ -73,7 +74,7 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
           </p>
           <p className="text-sm text-muted-foreground">{startTime} – {endTime}</p>
           <Separator className="my-3" />
-          <p className="text-2xl font-bold text-primary tabular-nums">₱{amount.toLocaleString()}</p>
+          <p className="font-display text-4xl text-primary tabular-nums">₱{amount.toLocaleString()}</p>
         </CardContent>
       </Card>
 
@@ -87,13 +88,13 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
               aria-pressed={method === m.id}
               onClick={() => setMethod(m.id)}
               className={cn(
-                'flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                'flex-1 flex flex-col items-center gap-1 py-3 rounded-lg border-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 method === m.id
                   ? 'border-primary bg-secondary'
                   : 'border-border hover:border-primary/50'
               )}
             >
-              <span className="text-xl">{m.icon}</span>
+              <m.Icon size={20} className={method === m.id ? 'text-primary' : 'text-muted-foreground'} aria-hidden="true" />
               <span className={cn('text-xs font-semibold', method === m.id ? 'text-primary' : 'text-muted-foreground')}>
                 {m.label}
               </span>
@@ -116,9 +117,9 @@ export function CheckoutForm({ slotId, courtId, courtName, amount, date, startTi
         />
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
-      <Button onClick={handleConfirm} disabled={loading} className="w-full" size="lg">
+      <Button onClick={handleConfirm} disabled={loading} variant="power" className="w-full" size="lg">
         {loading ? 'Processing…' : <span className="tabular-nums">Confirm & Pay ₱{amount.toLocaleString()} →</span>}
       </Button>
 

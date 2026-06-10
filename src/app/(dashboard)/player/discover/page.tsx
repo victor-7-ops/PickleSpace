@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LandPlot } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { DateChips } from '@/components/player/DateChips'
 import { CourtList } from '@/components/player/CourtList'
@@ -34,7 +35,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-foreground mb-1">Find a court</h1>
+      <h1 className="font-display text-3xl uppercase text-foreground mb-1">Find a court</h1>
       <p className="text-sm text-muted-foreground mb-4">
         {isToday ? "Today's" : 'Available'} courts in Cebu
       </p>
@@ -43,8 +44,8 @@ export default async function DiscoverPage({ searchParams }: Props) {
 
       {sorted.length === 0 ? (
         <div className="text-center py-16 flex flex-col items-center gap-3">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center text-3xl">
-            🏟
+          <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center">
+            <LandPlot size={28} className="text-primary" aria-hidden="true" />
           </div>
           <div>
             <p className="font-semibold text-foreground">No courts open {isToday ? 'today' : 'on this date'}</p>

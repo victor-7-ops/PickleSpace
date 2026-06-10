@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { HoldTimer } from '@/components/player/HoldTimer'
 import { CheckoutForm } from '@/components/player/CheckoutForm'
@@ -54,9 +55,13 @@ export default async function BookPage({ params, searchParams }: Props) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
-        <Link href={`/courts/${params.id}`} className="text-muted-foreground hover:text-foreground text-sm">
-          ← Back
+      <header className="sticky top-0 z-30 bg-card elevation-1 court-line px-4 py-3 flex items-center justify-between">
+        <Link
+          href={`/courts/${params.id}`}
+          aria-label="Back to court"
+          className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <ChevronLeft size={22} aria-hidden="true" />
         </Link>
         <span className="font-semibold text-foreground">Checkout</span>
         <HoldTimer

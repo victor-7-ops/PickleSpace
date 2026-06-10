@@ -61,13 +61,25 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
-        // Brand aliases kept for convenience
-        brand: {
-          50:  '#f0fdf4',
-          100: '#dcfce7',
-          500: '#22c55e',
-          600: '#16a34a',
-          700: '#15803d',
+        // Brand aliases — court navy + optic lime (ball)
+        court: {
+          50:  '#eef2fb',
+          100: '#dce3f6',
+          300: '#8fa3dd',
+          500: '#3753b0',
+          600: '#24398c',
+          700: '#162b64',
+          800: '#101f4b',
+          900: '#0b1434',
+        },
+        ball: {
+          50:  '#fafee7',
+          100: '#f2fcc4',
+          300: '#dff262',
+          400: '#d3ee2e',
+          500: '#c0dd12',
+          600: '#96ad0c',
+          700: '#71820d',
         },
       },
       borderRadius: {
@@ -77,6 +89,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'var(--font-sans)', 'system-ui', 'sans-serif'],
       },
       keyframes: {
         'slide-up': {

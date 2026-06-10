@@ -1,3 +1,4 @@
+import { CalendarDays } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { PlayerBookingCard } from '@/components/player/PlayerBookingCard'
 import Link from 'next/link'
@@ -63,7 +64,9 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
 
       {withQr.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-4xl mb-3">📅</p>
+          <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-3">
+            <CalendarDays size={28} className="text-primary" aria-hidden="true" />
+          </div>
           <p className="font-semibold text-foreground mb-1">No bookings yet</p>
           <p className="text-sm text-muted-foreground mb-4">Find a court to start playing.</p>
           <Link href="/player/discover" className={buttonVariants()}>Find a court</Link>

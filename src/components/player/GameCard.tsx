@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Crown } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -74,11 +75,11 @@ export function GameCard({ game, showRole }: GameCardProps) {
       )}>
         {/* Skill-level top strip */}
         <div className={cn(
-          'h-0.5',
+          'h-1',
           game.skill_level === 'beginner'     && 'bg-blue-400',
           game.skill_level === 'intermediate' && 'bg-amber-400',
           game.skill_level === 'advanced'     && 'bg-red-400',
-          game.skill_level === 'open'         && 'bg-primary',
+          game.skill_level === 'open'         && 'bg-accent',
         )} />
 
         <CardContent className="p-4">
@@ -107,7 +108,7 @@ export function GameCard({ game, showRole }: GameCardProps) {
                   variant={showRole === 'hosting' ? 'secondary' : 'outline'}
                   className="capitalize text-xs"
                 >
-                  {showRole === 'hosting' ? '⭐ Hosting' : 'Joined'}
+                  {showRole === 'hosting' ? <><Crown aria-hidden="true" /> Hosting</> : 'Joined'}
                 </Badge>
               )}
             </div>

@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
+import { Swords } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { NavTabs } from '@/components/ui/nav-tabs'
 import { createClient } from '@/lib/supabase/server'
@@ -102,7 +103,9 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
         <div className="flex flex-col gap-6">
           {myGames.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-4xl mb-3">🏓</p>
+              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-3">
+                <Swords size={28} className="text-primary" aria-hidden="true" />
+              </div>
               <p className="font-semibold text-foreground mb-1">No games yet</p>
               <p className="text-sm text-muted-foreground mb-4">Browse Discover to find a game to join.</p>
               <a href="/player/games?tab=discover" className={buttonVariants()}>Browse games</a>

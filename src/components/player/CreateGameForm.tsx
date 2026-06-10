@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { LandPlot } from 'lucide-react'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -53,7 +54,9 @@ export function CreateGameForm({ courtId, courtName, slotId, slotDate, slotStart
   if (!hasSlot) {
     return (
       <div className="text-center py-16">
-        <p className="text-4xl mb-4">🏟</p>
+        <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-4">
+          <LandPlot size={28} className="text-primary" aria-hidden="true" />
+        </div>
         <p className="font-semibold text-foreground mb-2">Book a court first</p>
         <p className="text-sm text-muted-foreground mb-6">You need a confirmed court booking to post an open game.</p>
         <a href="/player/discover" className={cn(buttonVariants())}>Find a Court →</a>

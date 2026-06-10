@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { Swords } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { GameCard } from './GameCard'
 import type { Game } from '@/types'
@@ -74,7 +75,9 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
   if (sortedDates.length === 0) {
     return (
       <div className="text-center py-16 text-muted-foreground">
-        <p className="text-4xl mb-3">🏓</p>
+        <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-3">
+          <Swords size={28} className="text-primary" aria-hidden="true" />
+        </div>
         <p className="font-medium text-foreground mb-1">No open games</p>
         <p className="text-sm">Be the first to post one!</p>
       </div>

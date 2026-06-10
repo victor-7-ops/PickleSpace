@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { MapPin, ChevronDown, ChevronUp } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 
 interface CourtAboutProps {
@@ -18,7 +19,9 @@ export function CourtAbout({ description, amenities, address, images }: CourtAbo
       <button onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between py-4 text-sm font-semibold text-foreground">
         About this court
-        <span className="text-muted-foreground">{open ? '▲' : '▾'}</span>
+        <span className="text-muted-foreground">
+          {open ? <ChevronUp size={16} aria-hidden="true" /> : <ChevronDown size={16} aria-hidden="true" />}
+        </span>
       </button>
       {open && (
         <div className="pb-4 flex flex-col gap-3">
@@ -37,7 +40,9 @@ export function CourtAbout({ description, amenities, address, images }: CourtAbo
               ))}
             </div>
           )}
-          <p className="text-sm text-muted-foreground">📍 {address}</p>
+          <p className="text-sm text-muted-foreground inline-flex items-center gap-1">
+            <MapPin size={14} aria-hidden="true" /> {address}
+          </p>
         </div>
       )}
     </div>

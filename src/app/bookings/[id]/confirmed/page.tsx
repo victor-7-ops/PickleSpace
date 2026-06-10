@@ -1,5 +1,6 @@
 import { redirect, notFound } from 'next/navigation'
 import Link from 'next/link'
+import { Check, X, Hourglass, Banknote } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { QRDisplay } from '@/components/player/QRDisplay'
 import { OpenGamePrompt } from '@/components/player/OpenGamePrompt'
@@ -60,7 +61,7 @@ export default async function ConfirmedPage({ params }: Props) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 text-center gap-6">
         <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center">
-          <span className="text-4xl">✗</span>
+          <X size={36} className="text-destructive" aria-hidden="true" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-foreground">Payment unsuccessful</h1>
@@ -84,7 +85,7 @@ export default async function ConfirmedPage({ params }: Props) {
       <div className="min-h-screen bg-background px-4 py-8 max-w-sm mx-auto">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-amber-100/50">
-            <span className="text-3xl">⏳</span>
+            <Hourglass size={28} className="text-amber-700" aria-hidden="true" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Confirming payment…</h1>
           <p className="text-sm text-muted-foreground mt-1">This usually takes a few seconds.</p>
@@ -108,22 +109,22 @@ export default async function ConfirmedPage({ params }: Props) {
       <div className="text-center pt-4">
         {/* Ripple ring + checkmark */}
         <div className="relative w-24 h-24 mx-auto mb-5">
-          <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping" style={{ animationDuration: '2s', animationIterationCount: 1 }} />
-          <div className="relative w-24 h-24 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
-            <span className="text-4xl text-primary-foreground font-bold">✓</span>
+          <div className="absolute inset-0 rounded-full bg-accent/40 motion-safe:animate-ping" style={{ animationDuration: '2s', animationIterationCount: 1 }} />
+          <div className="relative w-24 h-24 bg-accent rounded-full flex items-center justify-center elevation-3">
+            <Check size={44} strokeWidth={3} className="text-accent-foreground" aria-hidden="true" />
           </div>
         </div>
-        <h1 className="text-2xl font-extrabold text-foreground tracking-tight">
-          {isCash ? "You're booked!" : "Court booked!"}
+        <h1 className="font-display text-4xl uppercase text-foreground">
+          {isCash ? "You're booked!" : 'Game on!'}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {isCash ? 'Pay at the court on arrival.' : 'Payment confirmed. See you on the court! 🏓'}
+          {isCash ? 'Pay at the court on arrival.' : 'Payment confirmed. See you on the court!'}
         </p>
       </div>
 
       {/* Booking summary card — prominent, not buried */}
       <Card className="overflow-hidden">
-        <div className="h-1 bg-primary" />
+        <div className="h-1 bg-accent" />
         <CardContent className="p-5">
           <p className="font-bold text-lg text-foreground leading-tight">{courtName}</p>
           <p className="text-sm text-primary font-semibold mt-1">{formatDate(slotDate)}</p>
@@ -132,13 +133,13 @@ export default async function ConfirmedPage({ params }: Props) {
           </p>
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
             <span className="text-sm text-muted-foreground">Total paid</span>
-            <span className="text-xl font-bold text-primary tabular-nums">
+            <span className="font-display text-2xl text-primary tabular-nums">
               ₱{Number(booking.amount).toLocaleString()}
             </span>
           </div>
           {isCash && (
-            <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-800 font-medium">
-              💵 Cash — bring exact amount to the court
+            <div className="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-800 font-medium inline-flex items-center gap-1.5 w-full">
+              <Banknote size={14} aria-hidden="true" /> Cash — bring exact amount to the court
             </div>
           )}
         </CardContent>

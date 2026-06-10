@@ -78,7 +78,7 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
   return (
     <div>
       {error && (
-        <p className="text-sm text-destructive mb-3 text-center">{error}</p>
+        <p role="alert" className="text-sm text-destructive mb-3 text-center">{error}</p>
       )}
       <div className="flex flex-col gap-2">
         {available.map(slot => (
@@ -88,22 +88,22 @@ export function SlotGrid({ courtId, courtSlug, initialSlots, selectedDate, hourl
             disabled={!!holding}
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.1 }}
-            className="w-full min-h-[44px] flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-4 py-3 hover:bg-green-100 transition-colors disabled:opacity-60">
-            <span className="font-semibold text-green-800 text-sm">
+            className="w-full min-h-[48px] flex items-center justify-between bg-ball-50 border border-ball-300 rounded-lg px-4 py-3 hover:bg-ball-100 transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <span className="font-semibold text-court-700 text-sm">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-primary">₱{hourlyRate.toLocaleString()}</span>
+              <span className="text-sm font-bold text-court-700 tabular-nums">₱{hourlyRate.toLocaleString()}</span>
               {holding === slot.id
                 ? <span className="text-xs text-muted-foreground">Holding…</span>
-                : <span className="text-xs text-green-600 font-medium">Book →</span>
+                : <span className="text-xs text-ball-700 font-semibold">Book →</span>
               }
             </div>
           </motion.button>
         ))}
         {unavailable.map(slot => (
           <div key={slot.id}
-            className="w-full min-h-[44px] flex items-center justify-between bg-muted border border-border rounded-xl px-4 py-3 opacity-50">
+            className="w-full min-h-[48px] flex items-center justify-between bg-muted border border-border rounded-lg px-4 py-3 opacity-50">
             <span className="text-sm text-muted-foreground">
               {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
             </span>

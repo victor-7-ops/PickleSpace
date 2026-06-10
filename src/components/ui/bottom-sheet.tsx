@@ -33,7 +33,7 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
 
           {/* Sheet */}
           <motion.div
-            className="fixed bottom-0 left-0 right-0 z-50 glass-heavy rounded-t-2xl shadow-2xl max-h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card elevation-3 rounded-t-2xl max-h-[90vh] flex flex-col"
             variants={slideUp}
             initial="hidden"
             animate="visible"
@@ -44,7 +44,8 @@ export function Sheet({ open, onClose, title, children }: SheetProps) {
               <motion.button
                 onClick={onClose}
                 whileTap={{ scale: 0.9 }}
-                className="text-muted-foreground hover:text-foreground text-2xl leading-none w-8 h-8 flex items-center justify-center"
+                aria-label="Close"
+                className="text-muted-foreground hover:text-foreground text-2xl leading-none w-11 h-11 -mr-1.5 flex items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 ×
               </motion.button>

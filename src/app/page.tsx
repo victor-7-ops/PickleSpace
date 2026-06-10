@@ -26,7 +26,7 @@ export default function HomePage() {
         {/* Headline — oversized athletic display type */}
         <div>
           <div className="inline-flex items-center gap-1.5 bg-accent text-accent-foreground text-xs font-bold px-2.5 py-1 rounded-full mb-3 uppercase tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-foreground animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-accent-foreground motion-safe:animate-pulse" />
             Live in Cebu
           </div>
           <h1 className="font-display text-5xl uppercase text-foreground leading-[0.95] mb-3">

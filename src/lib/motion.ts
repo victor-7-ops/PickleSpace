@@ -15,7 +15,7 @@ export const distance = { sm: 8, md: 16, lg: 24 }
 /** Stagger container variant — for lists of cards */
 export const staggerContainer = {
   hidden:  {},
-  visible: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.05 } },
 }
 
 /** Stagger item variant — fade + lift */
@@ -27,7 +27,7 @@ export const staggerItem = {
 /** Sheet slide-up */
 export const slideUp = {
   hidden:  { y: '100%', opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: spring.smooth },
+  visible: { y: 0, opacity: 1, transition: spring.snappy },
   exit:    { y: '100%', opacity: 0, transition: spring.fast },
 }
 

@@ -147,26 +147,6 @@
     box-shadow: 0 4px 8px hsl(224 64% 24% / 0.08), 0 12px 28px hsl(224 64% 24% / 0.16);
   }
 
-  /* Legacy glass utilities — kept until screen passes replace usages.
-     Restyled onto new tokens so they read navy-tinted in the interim. */
-  .glass {
-    background: hsl(var(--background) / 0.75);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid hsl(var(--border) / 0.5);
-  }
-  .glass-heavy {
-    background: hsl(var(--background) / 0.88);
-    backdrop-filter: blur(24px) saturate(200%);
-    -webkit-backdrop-filter: blur(24px) saturate(200%);
-    border: 1px solid hsl(var(--border) / 0.4);
-  }
-  .glass-primary {
-    background: hsl(var(--primary) / 0.08);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid hsl(var(--primary) / 0.2);
-  }
 }
 
 @keyframes slide-up {

@@ -6,7 +6,9 @@ export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed'
 export type PaymentStatus = 'unpaid' | 'paid' | 'refunded'
 export type PaymentMethod = 'gcash' | 'card' | 'cash'
 export type GameStatus = 'open' | 'full' | 'cancelled' | 'completed'
-export type GamePlayerStatus = 'joined' | 'waitlisted' | 'left'
+export type GamePlayerStatus = 'joined' | 'waitlisted' | 'left' | 'attended' | 'no_show'
+export type GamePaymentStatus = 'unpaid' | 'pending' | 'paid' | 'refund_due'
+export type GameHostType = 'owner' | 'player'
 
 export interface User {
   id: string
@@ -73,6 +75,7 @@ export interface Game {
   id: string
   court_id: string
   slot_id?: string
+  booking_id?: string
   host_id: string
   title: string
   description?: string
@@ -80,6 +83,11 @@ export interface Game {
   max_players: number
   current_players: number
   status: GameStatus
+  host_type: GameHostType
+  price_per_head: number        // centavos
+  platform_fee_pct: number
+  visibility: 'public' | 'unlisted'
+  auto_join: boolean
   created_at: string
   court?: Court
   host?: User
@@ -92,6 +100,9 @@ export interface GamePlayer {
   game_id: string
   player_id: string
   status: GamePlayerStatus
+  payment_status: GamePaymentStatus
+  payment_method?: PaymentMethod
+  paymongo_reference?: string
   joined_at: string
   player?: User
 }

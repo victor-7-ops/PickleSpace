@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { Sheet } from '@/components/ui/bottom-sheet'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { OpenPlaySheet } from './OpenPlaySheet'
 import type { Slot, Booking } from '@/types'
 
 interface SlotSheetProps {
@@ -15,14 +16,16 @@ interface SlotSheetProps {
   courtId: string
   defaultRate: number
   booking?: Booking | null
+  isOpenPlay?: boolean
 }
 
-export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, courtId, defaultRate, booking }: SlotSheetProps) {
+export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, courtId, defaultRate, booking, isOpenPlay }: SlotSheetProps) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [startHour, setStartHour] = useState(newSlotHour ?? 6)
   const [endHour, setEndHour] = useState((newSlotHour ?? 6) + 1)
+  const [openPlayOpen, setOpenPlayOpen] = useState(false)
 
   const date = slot?.date ?? newSlotDate ?? ''
   const isReadOnly = slot && (slot.status === 'booked' || slot.status === 'held')
@@ -59,9 +62,10 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
     } finally { setSaving(false) }
   }
 
-  const title = isReadOnly ? 'Booking Details' : isExisting ? 'Available Slot' : 'Create Slot'
+  const title = isOpenPlay ? 'Open Play Slot' : isReadOnly ? 'Booking Details' : isExisting ? 'Available Slot' : 'Create Slot'
 
   return (
+    <>
     <Sheet open={open} onClose={onClose} title={title}>
       {isReadOnly && booking ? (
         <div className="flex flex-col gap-3">
@@ -85,6 +89,12 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
             <p className="text-sm text-ball-700 mt-1 tabular-nums">₱{defaultRate.toLocaleString()}/hr</p>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
+          <Button
+            onClick={() => { onClose(); setOpenPlayOpen(true) }}
+            className="w-full"
+          >
+            🏓 New Open Play
+          </Button>
           <Button variant="destructive" onClick={handleDelete} disabled={saving} className="w-full">
             {saving ? 'Deleting…' : 'Delete Slot'}
           </Button>
@@ -117,8 +127,26 @@ export function SlotSheet({ open, onClose, slot, newSlotDate, newSlotHour, court
           <Button onClick={handleCreate} disabled={saving || endHour <= startHour} className="w-full">
             {saving ? 'Creating…' : 'Create Slot'}
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => { onClose(); setOpenPlayOpen(true) }}
+            className="w-full"
+          >
+            🏓 New Open Play
+          </Button>
         </div>
       )}
     </Sheet>
+
+    <OpenPlaySheet
+      open={openPlayOpen}
+      onClose={() => setOpenPlayOpen(false)}
+      courtId={courtId}
+      slotId={slot?.status === 'available' ? slot.id : undefined}
+      date={date}
+      startHour={slot ? parseInt(slot.start_time.split(':')[0], 10) : startHour}
+      endHour={slot ? parseInt(slot.end_time.split(':')[0], 10) : endHour}
+    />
+    </>
   )
 }

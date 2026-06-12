@@ -26,12 +26,33 @@ function dateLabel(dateStr: string): string {
   return d.toLocaleDateString('en-PH', { weekday: 'long', month: 'short', day: 'numeric' })
 }
 
+function matchesFilter(game: Game, filter: string, playerSkillLevel: string): boolean {
+  if (game.status === 'cancelled') return false
+  switch (filter) {
+    case 'my-level':
+      // Show user's own level + open-to-all games (default feed behavior)
+      return game.skill_level === playerSkillLevel || game.skill_level === 'open'
+    case 'open':
+      return game.skill_level === 'open'
+    case 'beginner':
+      return game.skill_level === 'beginner'
+    case 'intermediate':
+      return game.skill_level === 'intermediate'
+    case 'advanced':
+      return game.skill_level === 'advanced'
+    default: // 'all'
+      return true
+  }
+}
+
 export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedProps) {
   const [games, setGames] = useState<Game[]>(initialGames)
 
   useEffect(() => {
     const supabase = createClient()
-    const channel = supabase
+
+    // Subscribe to game row changes (status, current_players)
+    const gamesChannel = supabase
       .channel('games-feed')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'games' }, payload => {
         setGames(prev => {
@@ -44,15 +65,38 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
         })
       })
       .subscribe()
-    return () => { supabase.removeChannel(channel) }
+
+    // Subscribe to game_players to keep current_players in sync without waiting for game row update
+    const playersChannel = supabase
+      .channel('games-feed-players')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'game_players' }, payload => {
+        const gameId = (payload.new as { game_id?: string })?.game_id
+          ?? (payload.old as { game_id?: string })?.game_id
+        if (!gameId) return
+        // Re-fetch just this game's current_players to stay in sync
+        supabase
+          .from('games')
+          .select('id, current_players, status')
+          .eq('id', gameId)
+          .single()
+          .then(({ data }) => {
+            if (!data) return
+            setGames(prev =>
+              prev.map(g => g.id === gameId ? { ...g, current_players: data.current_players, status: data.status } : g)
+            )
+          })
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(gamesChannel)
+      supabase.removeChannel(playersChannel)
+    }
   }, [])
 
-  const filtered = games.filter(g => {
-    if (g.status === 'cancelled') return false
-    if (filter === 'open') return g.status === 'open'
-    if (filter === 'my-level') return g.skill_level === playerSkillLevel || g.skill_level === 'open'
-    return true
-  })
+  // Default to 'my-level' if no filter set (matches server default)
+  const activeFilter = filter || 'my-level'
+  const filtered = games.filter(g => matchesFilter(g, activeFilter, playerSkillLevel))
 
   const grouped = new Map<string, Game[]>()
   for (const game of filtered) {
@@ -63,7 +107,7 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
   }
 
   for (const group of Array.from(grouped.values())) {
-    group.sort((a: Game, b: Game) => {
+    group.sort((a, b) => {
       const aTime = (a.slot as { start_time?: string } | null)?.start_time ?? ''
       const bTime = (b.slot as { start_time?: string } | null)?.start_time ?? ''
       return aTime.localeCompare(bTime)
@@ -78,8 +122,8 @@ export function GamesFeed({ initialGames, filter, playerSkillLevel }: GamesFeedP
         <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center mx-auto mb-3">
           <Swords size={28} className="text-primary" aria-hidden="true" />
         </div>
-        <p className="font-medium text-foreground mb-1">No open games</p>
-        <p className="text-sm">Be the first to post one!</p>
+        <p className="font-medium text-foreground mb-1">No games found</p>
+        <p className="text-sm">Try a different skill level filter.</p>
       </div>
     )
   }

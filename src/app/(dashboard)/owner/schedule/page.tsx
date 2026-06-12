@@ -50,6 +50,19 @@ export default async function SchedulePage() {
     )
   }
 
+  // Fetch open-play games for the same date range to show badge on grid cells
+  const { data: games } = await supabase
+    .from('games')
+    .select('id, slot_id, title, status, skill_level, max_players, current_players, host_type')
+    .eq('court_id', court.id)
+    .eq('host_type', 'owner')
+    .gte('created_at', today)
+    .not('slot_id', 'is', null)
+
+  const gamesBySlotId = Object.fromEntries(
+    (games ?? []).filter(g => g.slot_id).map(g => [g.slot_id, g])
+  )
+
   return (
     <>
       <h1 className="text-lg font-semibold text-foreground mb-1">{court.name}</h1>
@@ -58,6 +71,7 @@ export default async function SchedulePage() {
         court={court}
         initialSlots={slots ?? []}
         bookingsBySlotId={bookingsBySlotId}
+        gamesBySlotId={gamesBySlotId}
       />
     </>
   )

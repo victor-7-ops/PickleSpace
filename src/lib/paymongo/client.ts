@@ -6,15 +6,33 @@ function authHeader() {
   return 'Basic ' + Buffer.from(PAYMONGO_SECRET + ':').toString('base64')
 }
 
+// Prefix used in PayMongo `remarks` to route per-head game payments through the
+// webhook's game branch. Booking payments keep a bare UUID in remarks.
+export const GAME_PLAYER_REMARK_PREFIX = 'gp:'
+
 export interface CreatePaymentLinkOptions {
-  bookingId: string
-  amount: number          // in PHP
+  bookingId?: string      // for whole-court booking payments
+  gamePlayerId?: string   // for per-head open-play / game payments
+  amount?: number         // in PHP (booking path)
+  amountCentavos?: number // exact centavos (game path — price_per_head is centavos)
   description: string
   currency?: string
 }
 
 export async function createPaymentLink(opts: CreatePaymentLinkOptions) {
-  const amountCentavos = Math.round(opts.amount * 100)
+  const amountCentavos = opts.amountCentavos ?? Math.round((opts.amount ?? 0) * 100)
+  if (amountCentavos <= 0) {
+    throw new Error('createPaymentLink: amount must be > 0')
+  }
+
+  // Route the webhook: game payments get a prefixed game_player_id, bookings get a bare UUID.
+  const remarks = opts.gamePlayerId
+    ? `${GAME_PLAYER_REMARK_PREFIX}${opts.gamePlayerId}`
+    : opts.bookingId
+  if (!remarks) {
+    throw new Error('createPaymentLink: bookingId or gamePlayerId is required')
+  }
+
   const res = await fetch(`${BASE_URL}/links`, {
     method: 'POST',
     headers: {
@@ -27,7 +45,7 @@ export async function createPaymentLink(opts: CreatePaymentLinkOptions) {
           amount: amountCentavos,
           currency: opts.currency ?? 'PHP',
           description: opts.description,
-          remarks: opts.bookingId,
+          remarks,
         },
       },
     }),

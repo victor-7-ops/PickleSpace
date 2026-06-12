@@ -114,17 +114,28 @@ export function GameCard({ game, showRole }: GameCardProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
             <span className={cn(
               'text-[10px] font-semibold px-2 py-0.5 rounded-full border capitalize',
               SKILL_COLORS[game.skill_level] ?? SKILL_COLORS.open
             )}>
               {game.skill_level}
             </span>
-            <span className="text-xs text-muted-foreground">
-              by {host?.name ?? 'Player'}
-            </span>
-            {!isFull && !isCancelled && (
+            {game.host_type === 'owner' ? (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                Open Play
+              </span>
+            ) : (
+              <span className="text-xs text-muted-foreground">
+                by {host?.name ?? 'Player'}
+              </span>
+            )}
+            {game.price_per_head > 0 && (
+              <span className="text-xs font-semibold text-foreground ml-auto">
+                ₱{(game.price_per_head / 100).toLocaleString()}/head
+              </span>
+            )}
+            {game.price_per_head === 0 && !isFull && !isCancelled && (
               <span className="text-xs text-muted-foreground ml-auto">
                 {spotsLeft} spot{spotsLeft !== 1 ? 's' : ''} left
               </span>

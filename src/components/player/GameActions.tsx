@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 
-type ActionState = 'can-join' | 'joined' | 'full' | 'host' | 'cancelled' | 'unauthenticated'
+type ActionState = 'can-join' | 'joined' | 'waitlisted' | 'pending-approval' | 'full' | 'host' | 'cancelled' | 'unauthenticated'
 
 interface GameActionsProps {
   gameId: string
@@ -57,6 +57,24 @@ export function GameActions({ gameId, actionState }: GameActionsProps) {
           <p className="text-center text-sm font-semibold text-primary">✓ You&apos;re in!</p>
           <Button variant="outline" onClick={() => callApi('leave')} disabled={loading} className="w-full">
             {loading ? 'Leaving…' : 'Leave Game'}
+          </Button>
+        </div>
+      )}
+
+      {actionState === 'waitlisted' && (
+        <div className="flex flex-col gap-2">
+          <p className="text-center text-sm font-semibold text-muted-foreground">⏳ You're on the waitlist</p>
+          <Button variant="outline" onClick={() => callApi('leave')} disabled={loading} className="w-full">
+            {loading ? 'Leaving…' : 'Leave Waitlist'}
+          </Button>
+        </div>
+      )}
+
+      {actionState === 'pending-approval' && (
+        <div className="flex flex-col gap-2">
+          <p className="text-center text-sm font-semibold text-muted-foreground">⏳ Request sent — waiting for host approval</p>
+          <Button variant="outline" onClick={() => callApi('leave')} disabled={loading} className="w-full">
+            {loading ? 'Withdrawing…' : 'Withdraw Request'}
           </Button>
         </div>
       )}

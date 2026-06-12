@@ -33,7 +33,7 @@ export default function RegisterPage() {
         setError(error.message)
         return
       }
-      window.location.href = role === 'owner' ? '/owner/courts' : '/player/discover'
+      window.location.href = role === 'owner' ? '/owner/courts' : '/player/onboarding'
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {

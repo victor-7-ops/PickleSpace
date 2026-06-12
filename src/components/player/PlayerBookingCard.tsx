@@ -1,22 +1,29 @@
 'use client'
 import { useState } from 'react'
+import Link from 'next/link'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { OpenGameSheet } from './OpenGameSheet'
 import type { Booking } from '@/types'
 
 interface PlayerBookingCardProps {
   booking: Booking
   qrDataUrl: string
+  linkedGameId?: string | null   // set if a game already exists for this booking
+  isUpcoming?: boolean
 }
 
-export function PlayerBookingCard({ booking, qrDataUrl }: PlayerBookingCardProps) {
+export function PlayerBookingCard({ booking, qrDataUrl, linkedGameId, isUpcoming }: PlayerBookingCardProps) {
   const [qrOpen, setQrOpen] = useState(false)
+  const [openGameOpen, setOpenGameOpen] = useState(false)
 
   const court = booking.court as { name?: string } | null
   const slot = booking.slot as { date?: string; start_time?: string; end_time?: string } | null
   const showQr = booking.booking_status === 'confirmed' || booking.booking_status === 'pending'
+  // Only confirmed upcoming bookings can spawn a player-hosted game
+  const canOpenGame = booking.booking_status === 'confirmed' && isUpcoming
 
   const statusVariant = {
     confirmed: 'secondary' as const,
@@ -43,14 +50,39 @@ export function PlayerBookingCard({ booking, qrDataUrl }: PlayerBookingCardProps
               <span className="font-bold text-primary tabular-nums">₱{Number(booking.amount).toLocaleString()}</span>
               <span className="text-xs text-muted-foreground ml-1.5">{booking.payment_method}</span>
             </div>
-            {showQr && (
-              <Button variant="outline" size="sm" onClick={() => setQrOpen(true)}>
-                View QR
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {showQr && (
+                <Button variant="outline" size="sm" onClick={() => setQrOpen(true)}>
+                  View QR
+                </Button>
+              )}
+              {canOpenGame && (
+                linkedGameId ? (
+                  <Link
+                    href={`/games/${linkedGameId}`}
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-3"
+                  >
+                    View game
+                  </Link>
+                ) : (
+                  <Button variant="secondary" size="sm" onClick={() => setOpenGameOpen(true)}>
+                    🏓 Open game
+                  </Button>
+                )
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
+
+      {canOpenGame && !linkedGameId && (
+        <OpenGameSheet
+          bookingId={booking.id}
+          bookingAmountPhp={Number(booking.amount)}
+          open={openGameOpen}
+          onClose={() => setOpenGameOpen(false)}
+        />
+      )}
 
       <Drawer open={qrOpen} onOpenChange={setQrOpen}>
         <DrawerContent>

@@ -42,11 +42,25 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
       : bDate.localeCompare(aDate)   // descending: most recent first
   })
 
+  // Fetch linked games for player-hosted creation gating
+  const bookingIds = sorted.map(b => b.id)
+  let linkedGameMap: Record<string, string> = {}
+  if (bookingIds.length > 0) {
+    const { data: linkedGames } = await supabase
+      .from('games')
+      .select('id, booking_id')
+      .in('booking_id', bookingIds)
+    for (const g of linkedGames ?? []) {
+      if (g.booking_id) linkedGameMap[g.booking_id] = g.id
+    }
+  }
+
   // Pre-render QR codes server-side for all bookings
   const withQr = await Promise.all(
     sorted.map(async b => ({
       booking: b,
       qrDataUrl: await QRCode.toDataURL(b.qr_code, { width: 224, margin: 2 }),
+      linkedGameId: linkedGameMap[b.id] ?? null,
     }))
   )
 
@@ -73,8 +87,14 @@ export default async function PlayerBookingsPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {withQr.map(({ booking, qrDataUrl }) => (
-            <PlayerBookingCard key={booking.id} booking={booking} qrDataUrl={qrDataUrl} />
+          {withQr.map(({ booking, qrDataUrl, linkedGameId }) => (
+            <PlayerBookingCard
+              key={booking.id}
+              booking={booking}
+              qrDataUrl={qrDataUrl}
+              linkedGameId={linkedGameId}
+              isUpcoming={tab === 'upcoming'}
+            />
           ))}
         </div>
       )}

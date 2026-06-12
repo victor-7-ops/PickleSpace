@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { Swords } from 'lucide-react'
+import { Swords, ChevronRight } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { NavTabs } from '@/components/ui/nav-tabs'
 import { createClient } from '@/lib/supabase/server'
@@ -14,9 +14,13 @@ interface Props {
   searchParams: { tab?: string; filter?: string }
 }
 
+function localDateStr(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export default async function PlayerGamesPage({ searchParams }: Props) {
   const tab = searchParams.tab === 'mine' ? 'mine' : 'discover'
-  const filter = searchParams.filter ?? 'all'
+  const filter = searchParams.filter ?? 'my-level'
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -28,12 +32,25 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
     .single()
 
   const playerSkillLevel = (profile?.skill_level as string) ?? 'open'
+  const hasSkillLevel = !!profile?.skill_level
 
-  // Fetch open games with slot + court + host info for Discover tab
+  const now = new Date()
+  const today = localDateStr(now)
+  const sevenDaysLater = new Date(now)
+  sevenDaysLater.setDate(now.getDate() + 7)
+  const endDate = localDateStr(sevenDaysLater)
+
   const { data: openGames } = await supabase
     .from('games')
-    .select('*, slot:slots(date, start_time, end_time), court:courts(name, city), host:users(name)')
-    .eq('status', 'open')
+    .select(`
+      *,
+      slot:slots(date, start_time, end_time),
+      court:courts(name, city),
+      host:users(name, avatar_url)
+    `)
+    .in('status', ['open', 'full'])
+    .eq('visibility', 'public')
+    .gte('created_at', today)
     .order('created_at', { ascending: true })
     .limit(100)
 
@@ -42,9 +59,6 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
     .from('game_players')
     .select('game_id, status, game:games(*, slot:slots(date, start_time, end_time), court:courts(name), host:users(name))')
     .eq('player_id', user!.id)
-
-  const now = new Date()
-  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
 
   const myGames = (myGamePlayers ?? [])
     .map(gp => {
@@ -90,6 +104,18 @@ export default async function PlayerGamesPage({ searchParams }: Props) {
 
       {tab === 'discover' ? (
         <>
+          {!hasSkillLevel && (
+            <Link
+              href="/player/onboarding"
+              className="flex items-center justify-between bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 mb-4 hover:bg-primary/10 transition-colors"
+            >
+              <div>
+                <p className="text-sm font-semibold text-foreground">Set your skill level</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Get games matched to your level</p>
+              </div>
+              <ChevronRight size={16} className="text-primary shrink-0" aria-hidden="true" />
+            </Link>
+          )}
           <Suspense fallback={<div className="flex gap-2 mb-4"><Skeleton className="h-6 w-12 rounded-full" /><Skeleton className="h-6 w-14 rounded-full" /><Skeleton className="h-6 w-20 rounded-full" /></div>}>
             <GamesFilter playerSkillLevel={playerSkillLevel} />
           </Suspense>

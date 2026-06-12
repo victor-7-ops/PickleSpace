@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useSlotRealtime } from '@/hooks/useSlotRealtime'
 import { SlotSheet } from './SlotSheet'
 import { GenerateWeekSheet } from './GenerateWeekSheet'
-import type { Court, Slot, Booking } from '@/types'
+import type { Court, Slot, Booking, Game } from '@/types'
 
 /** Derive visible hour range from actual slot data + 1hr padding each side. Falls back to 6–22. */
 function getHourRange(slots: Slot[]): number[] {
@@ -36,9 +36,10 @@ interface WeeklyGridProps {
   court: Court
   initialSlots: Slot[]
   bookingsBySlotId: Record<string, Booking>
+  gamesBySlotId: Record<string, Game>
 }
 
-export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGridProps) {
+export function WeeklyGrid({ court, initialSlots, bookingsBySlotId, gamesBySlotId }: WeeklyGridProps) {
   const [weekStart, setWeekStart] = useState(() => mondayOf(new Date()))
   const weekDates = getWeekDates(weekStart)
   const today = new Date().toISOString().split('T')[0]
@@ -58,10 +59,12 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
   const [generateOpen, setGenerateOpen] = useState(false)
 
   // Slot status colors kept as raw per design spec
-  function cellColor(status: Slot['status'] | undefined) {
+  function cellColor(status: Slot['status'] | undefined, isOpenPlay?: boolean) {
     if (!status) return 'bg-muted border-border hover:bg-ball-50 cursor-pointer'
     if (status === 'available') return 'bg-ball-100 border-ball-300 hover:bg-ball-300 cursor-pointer'
     if (status === 'held')      return 'bg-yellow-100 border-yellow-200 cursor-pointer'
+    // Open play gets lime + hatching pattern (colorblind-safe: pattern, not color only)
+    if (status === 'booked' && isOpenPlay) return 'bg-primary/10 border-primary/40 cursor-pointer open-play-cell'
     if (status === 'booked')    return 'bg-blue-100 border-blue-200 cursor-pointer'
     return ''
   }
@@ -92,6 +95,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-ball-100 border border-ball-300 inline-block" />Available</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100 border border-yellow-200 inline-block" />Held</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-100 border border-blue-200 inline-block" />Booked</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-primary/10 border border-primary/40 open-play-cell inline-block" />Open Play</span>
       </div>
 
       <div className="overflow-x-auto">
@@ -122,6 +126,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
                   const dateStr = d.toISOString().split('T')[0]
                   const timeStr = `${String(hour).padStart(2, '0')}:00`
                   const slot = slotMap.get(`${dateStr}-${timeStr}`)
+                  const isOpenPlay = slot ? !!gamesBySlotId[slot.id] : false
                   return (
                     <div
                       key={di}
@@ -129,9 +134,11 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
                         if (slot) { setSheetSlot(slot); setNewCell(null) }
                         else { setNewCell({ date: dateStr, hour }); setSheetSlot(null) }
                       }}
-                      className={`h-8 rounded border text-[10px] flex items-center justify-center transition-colors ${cellColor(slot?.status)}`}
+                      className={`h-8 rounded border text-[10px] flex items-center justify-center transition-colors ${cellColor(slot?.status, isOpenPlay)}`}
+                      title={isOpenPlay ? gamesBySlotId[slot!.id]?.title : undefined}
                     >
-                      {slot?.status === 'booked' && '✓'}
+                      {slot?.status === 'booked' && isOpenPlay && '🏓'}
+                      {slot?.status === 'booked' && !isOpenPlay && '✓'}
                       {slot?.status === 'held' && '…'}
                     </div>
                   )
@@ -152,6 +159,7 @@ export function WeeklyGrid({ court, initialSlots, bookingsBySlotId }: WeeklyGrid
         courtId={court.id}
         defaultRate={court.hourly_rate}
         booking={sheetSlot ? bookingsBySlotId[sheetSlot.id] : null}
+        isOpenPlay={sheetSlot ? !!gamesBySlotId[sheetSlot.id] : false}
       />
 
       <GenerateWeekSheet
